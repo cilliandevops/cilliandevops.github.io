@@ -11,4 +11,5 @@
 - 艺术
 
 [GitHub](https://github.com/cilliandevops/)
-[Get Started](https://docs.cillian.website/#/)
+[我的博客](https://www.cillian.website)
+[快速开始](#main)

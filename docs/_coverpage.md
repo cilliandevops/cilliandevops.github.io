@@ -11,4 +11,5 @@
 - Art
 
 [GitHub](https://github.com/cilliandevops/)
-[Get Started](https://docs.cillian.website/#/)
+[My Blog](https://www.cillian.website)
+[Get Started](#main)
