@@ -8,6 +8,7 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="_custom.css">
 </head>
 <body>
   <!-- <nav>
@@ -15,12 +16,19 @@
     <a href="#/zh-cn/">中文</a>
   </nav> -->
   <div id="app"></div>
+
+
+
   <script>
     window.$docsify = {
+      formatUpdated: '{YY}-{MM}-{DD} {HH}:{mm}:{ss}',
       name: 'cillian-docs',
       repo: 'https://github.com/cilliandevops',
       logo: '_media/logo.png',
-      coverpage: ['/', '/zh-cn/'],
+      coverpage: [
+      '/', 
+      '/zh-cn/'
+    ],
       loadSidebar: true,
       loadNavbar: true,
     //   alias: {
@@ -37,14 +45,14 @@
     // language:'chinese'
   },
   // 搜索
-search : [
-  '/',            // => /README.md
-  '/guide',       // => /guide.md
-  '/get-started', // => /get-started.md
-  '/zh-cn/',      // => /zh-cn/README.md
-  '/zh-cn/wechat', // => /zh-cn/wechat.md
-  '/zh-cn/frontend/', // => /zh-cn/frontend
-],
+// search : [
+//   '/',            // => /README.md
+//   '/guide',       // => /guide.md
+//   '/get-started', // => /get-started.md
+//   '/zh-cn/',      // => /zh-cn/README.md
+//   '/zh-cn/wechat', // => /zh-cn/wechat.md
+//   '/zh-cn/frontend/', // => /zh-cn/frontend
+// ],
 
 // 完整配置参数
 search: {
@@ -88,6 +96,18 @@ search: {
 },
 
 plugins: [
+    // EditOnGithubPlugin.create(
+    // 'https://github.com/cilliandevops/cilliandevops.github.io/docs/',
+    // null,
+    // function(file) {
+    //   if (file.indexOf('en') === -1) {
+    //     return '编辑'
+    //   } else {
+    //     return 'edit on git'
+    //   }
+    // }
+    // ),
+
     function(hook) {
       var footer = [
         '<hr/>',
@@ -100,7 +120,24 @@ plugins: [
       hook.afterEach(function(html) {
         return html + footer;
       });
+    },
+    function(hook, vm) {
+      hook.beforeEach(function(html) {
+        var url =
+          'https://www.cillian.website' ;
+        var editHtml = '[📝 编辑文档](' + url + ')\n';
+
+        return (
+          editHtml +
+          html +
+          '\n----\n' +
+          '- ⏱最近更新时间：{docsify-updated} '  
+        );
+      });
     }
+
+
+
   ]
     }
     
@@ -126,9 +163,17 @@ plugins: [
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
-
-  <css>
-    logo {  size: 24px; }
-  </css>
+  <!-- 外链脚本 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
+  
+  <!-- 在github编辑 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
+  
+  <!-- 分页导航 -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>这一行有问题 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  
+  
 </body>
+
 </html>

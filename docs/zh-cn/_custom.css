@@ -1,0 +1,5 @@
+/* 修改侧边栏 Logo 大小 */
+.sidebar-logo {
+    width: 100px !important; /* 修改为你想要的宽度 */
+    height: 100px !important; /* 修改为你想要的高度 */
+}
