@@ -1,3 +1,239 @@
+
+## 2023年10月25日
+
+### 近日见闻
+
+1. 语雀宕机超过7小时，影响用户正常使用，已经发公告解释了原因和赔偿方案，给与用户半年会员。 --语雀
+
+2. GOPS 全球运维大会2023 · 上海站，10月26日-27日上海站即将正式举行 --GOPS社区
+
+3. 青云科技近日发布 KubeSphere 企业版 3.5.0（以下简称 KSE v3.5.0），致力于为企业提供更优质、更高效的容器应用体验。 --Kubesphere
+
+4. 文档网站上线，历史文章各位可查看docs.cillian.website --希里安
+
+## java常用注解
+
+当使用Spring Boot进行应用程序开发时，常常需要使用各种注解来简化配置、处理依赖注入以及定义特定行为。以下是更详细的介绍和示例，以帮助您更好地了解Spring Boot中一些常用的注解：
+
+1. `@SpringBootApplication`:
+   - 用途：这个注解是Spring Boot应用程序的主要入口点。它结合了`@Configuration`、`@EnableAutoConfiguration`和`@ComponentScan`，自动配置应用程序并扫描包中的组件。
+   - 示例：
+     ```java
+     @SpringBootApplication
+     public class MyApplication {
+         public static void main(String[] args) {
+             SpringApplication.run(MyApplication.class, args);
+         }
+     }
+     ```
+
+2. `@RestController`:
+   - 用途：标识一个类为RESTful控制器，它用于处理HTTP请求并返回数据，通常以JSON格式。
+   - 示例：
+     ```java
+     @RestController
+     public class MyController {
+         @GetMapping("/hello")
+         public String hello() {
+             return "Hello, World!";
+         }
+     }
+     ```
+
+3. `@RequestMapping`:
+   - 用途：用于映射HTTP请求到处理方法，并可以指定请求路径和HTTP方法。
+   - 示例：
+     ```java
+     @RestController
+     @RequestMapping("/api")
+     public class MyController {
+         @GetMapping("/hello")
+         public String hello() {
+             return "Hello, World!";
+         }
+     }
+     ```
+
+4. `@Autowired`:
+   - 用途：自动装配依赖对象，通常用于注入Spring Bean。它可以用在字段、构造函数、或setter方法上。
+   - 示例：
+     ```java
+     @Service
+     public class MyService {
+         @Autowired
+         private MyRepository repository;
+     }
+     ```
+
+5. `@Service`, `@Repository`, `@Component`:
+   - 用途：这些注解用于将类标识为Spring管理的组件。`@Service`通常用于业务逻辑层，`@Repository`用于数据访问层，而`@Component`是一个通用的组件标识。
+   - 示例：
+     ```java
+     @Service
+     public class MyService {
+         // ...
+     }
+
+     @Repository
+     public class MyRepository {
+         // ...
+     }
+     ```
+
+6. `@Configuration`:
+   - 用途：标识一个类为Spring配置类，通常用于定义Bean和配置。这对于将第三方组件集成到应用程序中非常有用。
+   - 示例：
+     ```java
+     @Configuration
+     public class MyConfig {
+         @Bean
+         public DataSource dataSource() {
+             // 配置数据源并返回
+         }
+     }
+     ```
+
+7. `@Value`:
+   - 用途：通过该注解可以将外部属性值注入到Spring Bean中。
+   - 示例：
+     ```java
+     @Component
+     public class MyComponent {
+         @Value("${my.property}")
+         private String myProperty;
+     }
+     ```
+
+8. `@EnableAutoConfiguration`:
+   - 用途：开启Spring Boot的自动配置功能，根据应用程序的依赖自动配置应用程序。
+   - 示例：通常由`@SpringBootApplication`自动包含。
+
+9. `@Entity`:
+   - 用途：用于JPA实体类的标识。它指示该类将映射到数据库表。
+   - 示例：
+     ```java
+     @Entity
+     public class User {
+         @Id
+         @GeneratedValue(strategy = GenerationType.IDENTITY)
+         private Long id;
+         private String username;
+         // ...
+     }
+     ```
+
+这些注解代表了Spring Boot应用程序中的常见构建块，它们帮助简化配置、依赖注入和处理HTTP请求等任务。根据您的应用程序需求，还可以使用其他Spring Boot注解来实现更多特定功能。这些注解是Spring Boot框架的核心，使开发变得更加高效且易于维护。
+
+
+## 2023年10月24日
+
+### 近日见闻
+
+1. 1024程序员节快乐！
+
+2. NGINX 推出 Plus Release 30 (R30) 版本。NGINX Plus 基于 NGINX 开源版构建而成，是唯一一款将软件 Web 服务器、负载均衡器、反向代理、内容缓存和 API 网关集于一身的多合一产品。 --Nginx社区
+
+3. OpenTiny Vue 3.11.0 发布：增加富文本、ColorPicker等4个新组件，迎来了贡献者大爆发！ --前端开源星球
+
+4. 有读者朋友建议我分享运维工作经验或者日常问题解决经验，我尽快总结分享，欢迎关注文档网站：docs.cillian.website
+
+
+
+### Java21创建一个Springboot应用
+
+
+**步骤 1：设置开发环境**
+
+首先，安装Java Development Kit（JDK），可以从Oracle或OpenJDK下载并安装。Java版本要兼容Spring Boot。比如springboot3最低要求java17。我们直接下载安装openjdk21，并设置好环境变量。
+
+**步骤 2：创建Spring Boot项目**
+
+使用Spring Initializer（https://start.spring.io/）或在IDE中创建新的Spring Boot项目。
+
+1. 打开浏览器，访问Spring Initializer网站。
+2. 在该网站上，选择项目的基本设置，包括项目名称、描述、包名、Java版本等，选择spring web依赖。
+3. 点击"Generate"按钮生成项目。
+4. 下载生成的项目文件，通常是一个zip压缩包。
+5. 解压缩项目文件，并导入到您的IDE中。
+
+**步骤 3：编写Spring Boot应用程序**
+
+在项目中，可以开始编写Spring Boot应用程序代码。比如创建一个RESTful Web服务：
+
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+public class MySpringBootApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MySpringBootApplication.class, args);
+    }
+}
+
+@RestController
+class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, Spring Boot!";
+    }
+}
+```
+
+这个示例创建了一个Spring Boot应用程序，其中包含一个HelloController，用于处理HTTP GET请求并返回"Hello, Spring Boot!"。
+
+**步骤 4：运行应用程序**
+
+在IDE中运行应用程序，或者使用以下命令行命令来运行：
+
+```
+./mvnw spring-boot:run
+```
+
+**步骤 5：测试应用程序**
+
+也可以使用浏览器或工具如curl或Postman来测试应用程序。在浏览器中输入`http://localhost:8080/hello`，应该能够看到"Hello, Spring Boot!"的响应。
+
+**步骤 6：打包应用程序**
+
+使用以下命令将应用程序打包成可执行的JAR文件：
+
+```
+./mvnw clean package
+```
+
+打包后的JAR文件通常会位于`target`目录下。
+
+**步骤 7：部署应用程序**
+
+将打包好的JAR文件部署到目标服务器或云平台上。通常，可以使用`java -jar your-app.jar`来运行应用程序。
+
+**步骤 8：配置应用程序**
+
+Spring Boot允许您在`application.properties`或`application.yml`文件中配置应用程序属性，例如端口号、数据库连接等。以下是一个`application.properties`文件的示例：
+
+```properties
+# 应用程序端口号
+server.port=8080
+
+# 数据库连接配置
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=username
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+
+这只是一个简单的示例，Spring Boot支持更多功能和配置选项，具体取决于项目需求。可以根据需求进一步扩展和定制应用程序。
+
+
+
+
+
+
 ## 2023年10月20日
 
 ### 近日见闻

@@ -9,18 +9,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <link rel="stylesheet" href="_custom.css">
+  <!-- 复制提醒 -->
+  <link rel="stylesheet" href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" type='text/css' media='all' />
+  <!-- 横幅提醒 -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-top-banner-plugin@latest/dist/style.css"/>
 </head>
 <body>
   <!-- <nav>
     <a href="#/">EN</a>
     <a href="#/zh-cn/">中文</a>
   </nav> -->
-  <div id="app"></div>
-
+  <!-- <div id="app"></div> -->
+  <div id="app">🏃‍🏃‍🏃‍💨奥利给！加载中...</div>
 
 
   <script>
     window.$docsify = {
+    
+      // topBanner: {
+      //   content: 'hello'
+        
+        
+      //             },  
+
+
+
+      mergeNavbar: true,// 小屏设备下合并导航栏到侧边栏
       formatUpdated: '{YY}-{MM}-{DD} {HH}:{mm}:{ss}',
       name: 'cillian-docs',
       repo: 'https://github.com/cilliandevops',
@@ -62,7 +76,7 @@ search: {
 
   // 支持本地化
   placeholder: {
-    '/zh-cn/': '搜索内容',
+    '/zh-cn/': '🔍 搜索内容',
     '/': 'Type to search'
   },
 
@@ -70,7 +84,7 @@ search: {
 
   // 支持本地化
   noData: {
-    '/zh-cn/': '找不到结果',
+    '/zh-cn/': '😒 找不到结果',
     '/': 'No Results'
   },
 
@@ -130,8 +144,8 @@ plugins: [
         return (
           editHtml +
           html +
-          '\n----\n' +
-          '- ⏱最近更新时间：{docsify-updated} '  
+          '\n\n---\n\n---\n'+
+         '⏱最近更新时间：{docsify-updated} '  
         );
       });
     }
@@ -173,7 +187,78 @@ plugins: [
   <!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>这一行有问题 -->
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   
+  <!-- 横幅提醒 -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-top-banner-plugin@latest/dist/index.js"></script>
   
+
+ 
+  <!-- 回到顶部功能 -->
+ <script src="https://cdn.jsdelivr.net/gh/wugenqiang/NoteBook@master/plugin/jquery.js"></script>
+ <script src="https://cdn.jsdelivr.net/gh/wugenqiang/NoteBook@master/plugin/jquery.goup.js"></script>
+ <script type="text/javascript">
+   $(document).ready(function () {
+     $.goup({
+       trigger: 100,
+       bottomOffset: 52,
+       locationOffset: 10,
+       //title: 'TOP',
+       titleAsText: true
+     });
+   });
+ </script>
+
+  <!-- 添加网站运行时间统计 -->
+  <!-- <script language=javascript>
+    function siteTime() {
+       window.setTimeout("siteTime()", 1000);
+       var seconds = 1000;
+       var minutes = seconds * 60;
+       var hours = minutes * 60;
+       var days = hours * 24;
+       var years = days * 365;
+       var today = new Date();
+       var todayYear = today.getFullYear();
+       var todayMonth = today.getMonth() + 1;
+       var todayDate = today.getDate();
+       var todayHour = today.getHours();
+       var todayMinute = today.getMinutes();
+       var todaySecond = today.getSeconds();
+       /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+       year - 作为date对象的年份，为4位年份值
+       month - 0-11之间的整数，做为date对象的月份
+       day - 1-31之间的整数，做为date对象的天数
+       hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+       minutes - 0-59之间的整数，做为date对象的分钟数
+       seconds - 0-59之间的整数，做为date对象的秒数
+       microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+       /* 建站时间 */
+
+       var t1 = Date.UTC(2021, 3, 1, 0, 0, 0); 
+       var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+       var diff = t2 - t1;
+       var diffYears = Math.floor(diff / years);
+       var diffDays = Math.floor((diff / days) - diffYears * 365);
+       var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+       var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+       var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds);
+       document.getElementById("sitetime").innerHTML = " 本站已安全运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 小时 " + diffMinutes + " 分 " + diffSeconds + " 秒 ";
+    }
+    siteTime();
+ </script> -->
+<!-- 复制提醒 -->
+      <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+      <script>
+        document.body.oncopy = function () {
+          swal("希里安提醒",
+               "铁子你好！若要转载或引用请务必保留原文链接，并申明来源。",
+                "success"); };
+      </script>
+
+
+<!-- 访问量统计 -->
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+
 </body>
 
 </html>
