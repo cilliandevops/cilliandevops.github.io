@@ -627,10 +627,10 @@ CommonJS 使用 require() 方法进行模块的导入，例如：const foo = req
       }
 ```
 ## 7.安装windicss
-
+```js
 https://cn.windicss.org/
 
-点击vite
+点击vite图标集成
 
 npm i -D vite-plugin-windicss windicss
 
@@ -640,18 +640,20 @@ plugins: [vue(),WindiCSS()],
 
 引入main.ts
 import 'virtual:windi.css'
-
+```
 
 ### Unknown at rule @applycss(unknownAtRules)问题解决
 
 猜想：大致应该是内置的css检查，不识别外置的css规则
 
 https://zhuanlan.zhihu.com/p/624435959
+
 https://github.com/tailwindlabs/tailwindcss/discussions/5258
 
 这个先不着急解决吧
-
+```js
 2023年7月16日11:11:00
+
 安装在开发环境依赖
 npm install --save-dev stylelint stylelint-config-standard
 
@@ -692,9 +694,9 @@ module.exports = {
 
 
 重启vs警告消失
-
+```
 ### windi设置别名
-
+```js
 export default {
   alias: {
     'hstack': 'flex items-center',
@@ -731,7 +733,7 @@ extract: {
     exclude: ['node_modules', '.git', 'dist'],
   },
 
-
+```
 ### 注意
 
 1. 一个项目尽量用一种包管理器，比如只使用npm或者pnpm
