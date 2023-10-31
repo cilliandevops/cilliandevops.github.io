@@ -28,27 +28,26 @@ Vite是一种新型前端构建工具，能够显著提升前端开发体验。
 
 vite官网：<https://cn.vitejs.dev/guide/>
 
-脚手架create-vite
+脚手架：create-vite
 
 https://github.com/vitejs/vite/tree/main/packages/create-vite
 
 初始化项目
 
 使用pnpm
+```js
+create vite
+选择vue+ts
 
-      pnpm create vite
-      选择vue+ts
-
-      cd xops-fe
-      pnpm install
-      pnpm run dev
-
-![Alt text](image.png)
+cd xops-fe
+pnpm install
+pnpm run dev
+```
 
 ## 2、初始依赖
 
 ### 初始依赖package.json：
-
+```js
       {
       "name": "xops",
       "private": true,
@@ -69,9 +68,10 @@ https://github.com/vitejs/vite/tree/main/packages/create-vite
          "vue-tsc": "^1.8.3"
       }
       }
+```
+- 2023年8月2日13:53:39
 
-2023年8月2日13:53:39
-
+```js
 {
   "name": "xops-fe",
   "private": true,
@@ -92,10 +92,11 @@ https://github.com/vitejs/vite/tree/main/packages/create-vite
     "vue-tsc": "^1.8.5"
   }
 }
+```
 
+- 2023年7月15日15:09:02最新版本：
 
-2023年7月15日15:09:02最新版本：
-
+```js
 vue： 3.3.4 (2023-05-18)
 
 elment-plus： 2.3.8（2023-07-14）
@@ -116,9 +117,10 @@ typescript: 5.1.6(2023-07-07)
 
       https://github.com/element-plus/element-plus-icons/releases
 
+```
+- 2023年8月2日13:54:00最新版本：
 
-2023年8月2日13:54:00最新版本：
-
+```js
 vue： 3.3.4 (2023-05-18)
 
 elment-plus： 2.3.8（2023-07-14）
@@ -139,6 +141,8 @@ typescript: 5.1.6(2023-07-07)
 
       https://github.com/element-plus/element-plus-icons/releases
 
+```
+
 ### 更新依赖
 
     1. ncu
@@ -152,7 +156,7 @@ typescript: 5.1.6(2023-07-07)
 
     2. nuc -u
    
-时间：
+```js
 Using pnpm
 Checking E:\Cillian2023\CillianDevOps\Projects\xops\xops-fe\package.json
 [====================] 5/5 100%
@@ -162,17 +166,18 @@ Checking E:\Cillian2023\CillianDevOps\Projects\xops\xops-fe\package.json
  vue-tsc     ^1.8.5  →  ^1.8.8
 
 Run ncu -u to upgrade package.json
+```
 
+## 3.安装elmentplus和icon
+```js
+http://element-plus.org/zh-CN/guide/installation.html
 
-### 安装elmentplus和icon
+pnpm install element-plus
 
-      http://element-plus.org/zh-CN/guide/installation.html
-
-      pnpm install element-plus
-
-      pnpm install @element-plus/icons-vue
-
+pnpm install @element-plus/icons-vue
+```
 ---
+```js
 <!-- PS E:\Cillian2023\CillianDevOps\Projects\xops\xops-fe>  pnpm install element-plus
 Packages: +22
 ++++++++++++++++++++++
@@ -190,10 +195,11 @@ dependencies:
 
 Progress: resolved 90, reused 68, downloaded 0, added 0, done
 Done in 4.3s -->
+```
 ---
 
 
-### 安装vuerouter
+## 4.安装vuerouter
 
       pnpm install vue-router@latest
 
@@ -207,12 +213,12 @@ Done in 4.3s -->
       All dependencies match the latest package versions :)
 
 
-### 引入配置
+## 5.引入配置
 
 #### 全局注册组件
 
 - 引入elment-plus和icon
-
+```js
       // main.ts
       import { createApp } from 'vue'
       import ElementPlus from 'element-plus'
@@ -223,8 +229,9 @@ Done in 4.3s -->
 
       app.use(ElementPlus)
       app.mount('#app')
-
+```
 - Element Plus全局组件类型声明(这个不用了2023年8月2日15:13:19)
+```js
 // tsconfig.json
 {
   "compilerOptions": {
@@ -232,19 +239,19 @@ Done in 4.3s -->
     "types": ["element-plus/global"]
   }
 }
-
+```
 
 
 - 引入icon
-      
+```js      
       import * as ElementPlusIconsVue from '@element-plus/icons-vue'
       const app = createApp(App)
       for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
       app.component(key, component)
       }
-
+```
 页面使用 Element Plus 组件和图标
-
+```js
 <!-- src/App.vue -->
 <template>
   <img alt="Vue logo" src="./assets/logo.png"/>
@@ -264,13 +271,13 @@ Done in 4.3s -->
      import {Search, Edit,Check,Message,Star, Delete} from '@element-plus/icons-vue'
 </script>
 
-
+```
 
 
 - 引入vuerouter
 
 创建文件夹/src/router以及文件index.ts
-
+```js
          const routes = [
       { path: '/', component: Home },
       { path: '/about', component: About },
@@ -295,22 +302,22 @@ Done in 4.3s -->
 
       // 现在，应用已经启动了！
 
-
+```
 - main.ts挂载
   
-      import { createApp } from 'vue'
-      import './style.css'
-      import App from './App.vue'
-      import { router } from './router'
+  ```js
+  import { createApp } from 'vue'
+  import './style.css'
+  import App from './App.vue'
+  import { router } from './router'
 
 
-      const app = createApp(App)
+  const app = createApp(App)
 
-      app.use(router)
+  app.use(router)
 
 
-      app.mount('#app')
-
+  app.mount('#app')
 
 #### 路径别名配置
 
@@ -318,9 +325,7 @@ Done in 4.3s -->
 - 
       https://cn.vitejs.dev/config/
 
-
-
-
+```js
    import path from 'path'
       resolve:{
             alias:{
@@ -341,8 +346,10 @@ export default defineConfig({
         }
     }
 })
-
+```
 ### 安装@types/node
+
+```js
 这里设置别名有点问题，关于ts的path模块，需要安装ts和@type/node，编译器报错：TS2307: Cannot find module 'path' or its corresponding type declarations.
 
 pnpm install @types/node --save-dev
@@ -370,7 +377,7 @@ PS E:\Cillian2023\CillianDevOps\Projects\xops\xops-fe> npm config set registry h
 PS E:\Cillian2023\CillianDevOps\Projects\xops\xops-fe> npm config get registry                                        
 https://registry.npm.taobao.org/
 
-
+```
 
 
 ----
@@ -379,7 +386,7 @@ https://registry.npm.taobao.org/
 同样还是import path from 'path' 编译报错: TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
 
 因为 typescript 特殊的 import 方式 , 需要配置允许默认导入的方式，还有路径别名的配置
-
+```js
 // tsconfig.json
 {
   "compilerOptions": {
@@ -390,9 +397,9 @@ https://registry.npm.taobao.org/
     "allowSyntheticDefaultImports": true // 允许默认导入
   }
 }
+```
 
-
-## 自动导入
+## 6.自动导入
 Element Plus 官方文档中推荐 按需自动导入 的方式，而此需要使用额外的插件 unplugin-auto-import 和 unplugin-vue-components 来导入要使用的组件。所以在整合 Element Plus 之前先了解下自动导入的概念和作用
 为了避免在多个页面重复引入 API 或 组件，由此而产生的自动导入插件来节省重复代码和提高开发效率。
 插件	概念	自动导入对象
@@ -400,13 +407,10 @@ unplugin-auto-import	按需自动导入API	ref，reactive,watch,computed 等API
 unplugin-vue-components	按需自动导入组件	Element Plus 等三方库和指定目录下的自定义组件
 
 
-![](image-1.png)
-
-
 https://www.cnblogs.com/haoxianrui/p/17331952.html
 
 ## 步骤
-
+```js
 pnpm install -D unplugin-vue-components unplugin-auto-import
 
 新建 /src/types 目录用于存放自动导入函数和组件的TS类型声明文件
@@ -431,6 +435,7 @@ export default defineConfig({
   ],
 })
 
+```
 ```js
 import path from 'path'
 import { defineConfig } from 'vite'
@@ -498,6 +503,7 @@ export default defineConfig({
 
 
 ### 自动导入图标：
+
 https://github.com/sxzz/element-plus-best-practices/blob/db2dfc983ccda5570033a0ac608a1bd9d9a7f658/vite.config.ts#L21-L58
 
 安装 Element Plus
@@ -545,7 +551,7 @@ npm install @types/node 会将 @types/node 包添加到 devDependencies 中，�
 import MyComponent from '@/components/MyComponent.vue';
 
 上面配置是基于 ES 模块的语法。如果你的项目使用的是 CommonJS 的模块化规范，可以使用以下代码来进行配置：
-
+```js
 // vite.config.js
 const { defineConfig } = require('vite');
 const path = require('path');
@@ -557,6 +563,7 @@ module.exports = defineConfig({
     },
   },
 });
+```
 
 ES 模块使用 import 和 export 关键字进行模块的导入和导出，例如：import { foo } from './module';、export default myModule;。
 
@@ -573,7 +580,7 @@ CommonJS 使用 require() 方法进行模块的导入，例如：const foo = req
 
 
 - 配置tsconfig.json
-
+```js
    {
    "files": [],
    "references": [
@@ -585,8 +592,9 @@ CommonJS 使用 require() 方法进行模块的导入，例如：const foo = req
       }
    ]
    }
-
+```
 #### node.json
+```js
    {
    "extends": "@tsconfig/node18/tsconfig.json",
    "include": [
@@ -602,8 +610,9 @@ CommonJS 使用 require() 方法进行模块的导入，例如：const foo = req
       "types": ["node"]
    }
    }
+   ```
 #### app.json
-
+```js
       {
       "extends": "@vue/tsconfig/tsconfig.dom.json",
       "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
@@ -616,8 +625,8 @@ CommonJS 使用 require() 方法进行模块的导入，例如：const foo = req
          }
       }
       }
-
-### 安装windicss
+```
+## 7.安装windicss
 
 https://cn.windicss.org/
 
@@ -762,7 +771,7 @@ Copy code
 
 ```
 
-3. vue cli转移vite构建
+## 8.vue cli转移vite构建
 
 ```js
 
@@ -785,7 +794,7 @@ CSS 预处理器： 如果你在 Vue CLI 项目中使用了 CSS 预处理器（�
 
 
 
-## 开发开始
+## 9.开发开始
 
 ### 后台管理系统
 涉及技术栈：

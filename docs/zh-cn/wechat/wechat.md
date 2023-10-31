@@ -1,4 +1,225 @@
 
+## 2023年10月30日
+
+## 近日见闻
+
+1. KubeSphere社区已经在深圳、杭州、上海三个城市各组织了一场线下 Meetup。11月4日，云原生+AI Meetup成都站将正式开启！--kubesphere社区
+
+2. 澎湃OS发布前，不少人都争论，它不是小米自研的系统，对此雷军还特意表示，确实不是。小米的澎湃OS由两部分组成：一部分是基于安卓系统进行深度进化的，这使得澎湃OS可以与安卓系统保持同步，并且能够使用安卓软件。另一部分则是小米自研发的Vela系统，主要用于实现小米产品之间的互联互通。这种系统架构使得澎湃OS能够兼顾兼容性和自主性，既满足了用户对丰富应用的需求，又能够提供更好的硬件软件一体化体验。--小米社区
+
+3. 身体第一位，身体好才能工作好！
+
+## mysql主从复制
+
+MySQL主从复制是一种数据库复制技术，允许将一个MySQL数据库的数据和变更同步到一个或多个其他MySQL数据库，其中一个被称为"主数据库"，而其他的被称为"从数据库"。主从复制有多种应用场景，包括数据备份、负载均衡、故障恢复和分布式数据处理。
+
+1. 主数据库：主数据库包含数据和执行写操作（INSERT、UPDATE、DELETE）的操作。这是数据库的源头，数据的变更都从这里开始。主数据库维护一个二进制日志（Binary Log），该日志记录了数据库的所有写操作。
+
+2. 从数据库：从数据库是主数据库的副本，它包含与主数据库相同的数据。但是，从数据库只能执行读操作，不允许对数据进行写操作。从数据库维护一个复制事件队列，通过复制事件队列来接收主数据库的数据变更。
+
+主从复制的工作原理如下：
+
+1. 主数据库将所有的写操作（增加、修改、删除数据）记录到二进制日志（Binary Log）中。这个日志以二进制的方式记录，因此效率更高，并且可以容纳大量的写操作。
+
+2. 从数据库连接到主数据库，并请求复制权限。主数据库会为从数据库创建一个用于复制的账户，授权它可以读取二进制日志。
+
+3. 从数据库启动一个I/O线程，它的任务是连接到主数据库，获取二进制日志中的事件。主数据库会将新的事件追加到二进制日志中，并I/O线程会将这些事件传输给从数据库。
+
+4. 从数据库接收到事件后，会将这些事件写入到复制事件队列中，这个队列存储了即将被应用到从数据库上的事件。
+
+5. 从数据库启动一个SQL线程，它会从复制事件队列中读取事件，并在从数据库上执行这些事件，以确保从数据库的数据与主数据库同步。
+
+6. 从数据库周期性地将执行的事件信息反馈给主数据库，主数据库会记录从数据库的同步状态，以确保数据一致性。
+
+7. 如果从数据库中的某个表需要读取数据，它会从本地数据获取，因为数据是只读的，不需要请求主数据库。这降低了主数据库的读负载，实现了负载均衡。
+
+主从复制的好处包括：
+
+- 数据冗余：通过创建一个或多个从数据库，可以实现数据冗余，提高了数据的可用性和容错性。如果主数据库发生故障，从数据库仍然可以提供读服务。
+
+- 负载均衡：读操作可以分布到从数据库上，从而减轻主数据库的负载，提高了性能。
+
+- 数据备份：从数据库可以用于数据备份，而不会影响主数据库的性能。备份可以从从数据库进行，而不必干扰主数据库的正常运行。
+
+
+MySQL主从复制是一种有用的数据库复制技术，但它也存在一些潜在的缺点和导致延时的点。
+
+1. 数据复制延时：
+   - 网络延迟：如果主数据库和从数据库之间的网络连接速度较慢，数据传输可能会导致较大的延迟。
+   - 大量写操作：如果主数据库上的写操作非常频繁，从数据库可能需要一定时间来追赶主数据库的数据变更。
+   - 大事务：如果主数据库上执行了大规模的事务，这些事务可能需要更长的时间来复制到从数据库上，导致延时。
+
+2. 数据不一致：
+   - 数据冲突：如果在主数据库和从数据库上同时对同一数据进行写操作，可能导致数据不一致。主从复制无法解决这种冲突，需要应用层或数据库管理员手动解决。
+   - 误删数据：如果在主数据库上执行了删除操作，这个操作也会在从数据库上执行，导致数据被永久删除。
+
+3. 单点故障：主从复制通常依赖于主数据库，如果主数据库发生故障，整个复制架构可能会受到影响。因此，需要采取适当的故障恢复和高可用性措施。
+
+4. 配置和管理复杂性：维护主从复制系统需要一定的配置和管理工作，包括设置、监控、维护、备份和性能调优。如果不小心配置错误，可能会导致数据不一致或性能问题。
+
+5. 安全性问题：从数据库需要连接到主数据库，因此需要配置适当的安全措施来防止未经授权的访问。
+
+6. 版本兼容性：主数据库和从数据库之间的MySQL版本必须兼容，否则可能会出现复制问题。
+
+7. 故障检测和恢复：如果从数据库发生故障，需要手动或自动进行恢复，以确保主从复制能够继续正常工作。
+
+8. 增加复杂性：主从复制引入了额外的复杂性，需要额外的硬件和维护成本，包括存储和网络资源。
+
+
+
+
+## 2023年10月26日
+
+### 近日见闻
+
+1. Protect AI一手打造了开源软件（OSS）漏洞赏金平台Huntr，如今，这家公司更进一步，按Apache 2.0许可条款开源其三款AI/ML安全工具。NB Defense、ModelScan、Rebuff。 --https://github.com/protectai/nbdefense
+
+2. EA 悄悄地搞了个大事件，把《命令与征服》系列中的 2 个游戏的部分源码开源了！这两个游戏分别是：Tiberian Dawn（泰伯利亚的黎明） 和 Red Alert（红色警戒）。--https://github.com/electronicarts/CnC_Remastered_Collection
+
+3. 10月26日11时14分，搭载神舟十七号载人飞船的长征二号F遥十七运载火箭在酒泉卫星发射中心点火发射，约10分钟后，神舟十七号载人飞船与火箭成功分离，进入预定轨道，航天员乘组状态良好，发射取得圆满成功。--新闻
+
+### MyBatis-Plus代码生成器
+
+MyBatis-Plus 官方文档：
+
+https://baomidou.com/
+
+- 前提条件： 准备测试数据库、创建一个springboot项目
+
+- 在 pom.xml 中导入相关依赖
+```js
+<!--mybatis-plus-->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.4.3.4</version>
+</dependency>
+<!--mybatis-plus-generator 生成器-->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-generator</artifactId>
+    <version>3.5.1</version>
+</dependency>
+```
+
+- 编写一个mian方法，加上框架
+```js
+public static void main(String[] args) {
+    //1、配置数据源
+    FastAutoGenerator.create("url", "username", "password")
+        //2、全局配置
+        .globalConfig(...)
+        //3、包配置
+        .packageConfig(...)
+        //4、策略配置
+        .strategyConfig(...)
+        //5、模板引擎配置
+        .templateEngine(...)
+        //6、执行
+        .execute();
+}
+```
+- 附：快速生成样例代码
+
+```js
+
+public static void main(String[] args) {
+    //1、配置数据源
+    FastAutoGenerator.create("jdbc:mysql://localhost:3306/mybatisplus", "root", "123456")
+        //2、全局配置
+        .globalConfig(builder -> {
+            builder.author("cillian") // 设置作者名
+                .outputDir(System.getProperty("user.dir") + "/src/main/java")   //设置输出路径：项目的 java 目录下
+                .commentDate("yyyy-MM-dd hh:mm:ss")   //注释日期
+                .dateType(DateType.ONLY_DATE)   //定义生成的实体类中日期的类型 TIME_PACK=LocalDateTime;ONLY_DATE=Date;
+                .fileOverride()   //覆盖之前的文件
+                .enableSwagger()   //开启 swagger 模式
+                .disableOpenDir();   //禁止打开输出目录，默认打开
+        })
+        //3、包配置
+        .packageConfig(builder -> {
+            builder.parent("com") // 设置父包名
+                .moduleName("mp")   //设置模块包名
+                .entity("entity")   //pojo 实体类包名
+                .service("service") //Service 包名
+                .serviceImpl("serviceImpl") // ***ServiceImpl 包名
+                .mapper("mapper")   //Mapper 包名
+                .xml("mapper")  //Mapper XML 包名
+                .controller("controller") //Controller 包名
+                .other("utils") //自定义文件包名
+                .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir")+"/src/main/resources/mapper"))    //配置 mapper.xml 路径信息：项目的 resources 目录下
+        })
+        //4、策略配置
+        .strategyConfig(builder -> {
+            builder.addInclude("user", "student") // 设置需要生成的数据表名
+                .addTablePrefix("t_", "c_") // 设置过滤表前缀
+
+                //4.1、Mapper策略配置
+                .mapperBuilder()
+                .superClass(BaseMapper.class)   //设置父类
+                .formatMapperFileName("%sMapper")   //格式化 mapper 文件名称
+                .enableMapperAnnotation()       //开启 @Mapper 注解
+                .formatXmlFileName("%sXml"); //格式化 Xml 文件名称
+
+            	//4.2、service 策略配置
+            	.serviceBuilder()
+                .formatServiceFileName("%sService") //格式化 service 接口文件名称，%s进行匹配表名，如 UserService
+                .formatServiceImplFileName("%sServiceImpl") //格式化 service 实现类文件名称，%s进行匹配表名，如 UserServiceImpl
+
+                //4.3、实体类策略配置
+                .entityBuilder()
+                .enableLombok() //开启 Lombok
+                .disableSerialVersionUID()  //不实现 Serializable 接口，不生产 SerialVersionUID
+                .logicDeleteColumnName("deleted")   //逻辑删除字段名
+                .naming(NamingStrategy.underline_to_camel)  //数据库表映射到实体的命名策略：下划线转驼峰命
+                .columnNaming(NamingStrategy.underline_to_camel)    //数据库表字段映射到实体的命名策略：下划线转驼峰命
+                .addTableFills(
+                new Column("create_time", FieldFill.INSERT),
+                new Column("modify_time", FieldFill.INSERT_UPDATE)
+            )   //添加表字段填充，"create_time"字段自动填充为插入时间，"modify_time"字段自动填充为插入修改时间
+                .enableTableFieldAnnotation()       // 开启生成实体时生成字段注解
+
+                //4.4、Controller策略配置
+                .controllerBuilder()
+                .formatFileName("%sController") //格式化 Controller 类文件名称，%s进行匹配表名，如 UserController
+                .enableRestStyle()  //开启生成 @RestController 控制器
+        })
+        //5、模板
+        .templateEngine(new VelocityTemplateEngine())
+        /*
+                .templateEngine(new FreemarkerTemplateEngine())
+                .templateEngine(new BeetlTemplateEngine())
+                */
+        //6、执行
+        .execute();
+}
+```
+
+报错：
+```bash
+[main] WARN com.baomidou.mybatisplus.generator.config.GlobalConfig - 全局覆盖已有文件的配置已失效，已迁移到策略配置中
+Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/velocity/context/Context
+	at website.cillian.aops.CodeGenerator.main(CodeGenerator.java:43)
+Caused by: java.lang.ClassNotFoundException: org.apache.velocity.context.Context
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:382)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	... 1 more
+```
+
+添加生成模版引擎即可
+
+```js
+<dependency>
+  <groupId>org.apache.velocity</groupId>
+  <artifactId>velocity-engine-core</artifactId>
+  <version>2.3</version>
+</dependency>
+```
+
+
+
 ## 2023年10月25日
 
 ### 近日见闻
@@ -11,7 +232,7 @@
 
 4. 文档网站上线，历史文章各位可查看docs.cillian.website --希里安
 
-## java常用注解
+### java常用注解
 
 当使用Spring Boot进行应用程序开发时，常常需要使用各种注解来简化配置、处理依赖注入以及定义特定行为。以下是更详细的介绍和示例，以帮助您更好地了解Spring Boot中一些常用的注解：
 
