@@ -1,3 +1,104 @@
+## 2023年11月1日
+
+## 近日见闻
+
+1. AMH7.1发布，安全稳定纯净轻巧高效的主机面板。AMH 国内首款开源的主机面板，目前已持续不中断更新12年。 --AMH
+
+2. 开源物联网平台 ThingsPanel 0.5.4 发布，新增看板，美观快速。--ThingsPanel
+
+3. 微软推送 Windows 11 23H2 更新。考虑到微软计划在 2024 年发布下一代 Windows（可能是 Windows 12），因此 23H2 会成为 Windows 11 的最后一个重大更新。 --windows
+
+4. 百度上线「文心一言」会员，开通可解锁文心大模型 4.0。 --百度
+
+
+## springboot+vue3快速启动应用
+
+为了方便测试运维开发流程中会产生的各种问题，有一个测试应用是至关重要的。所以花了半天时间写好了前后端，但目前不够完善，先把大致流程分享给大家。
+
+
+仓库地址如下。记得点个小星星哦：
+
+https://github.com/cilliandevops/aops
+
+### 1.准备好开发环境
+
+- node16+
+- jdk1.8+
+- idea、vscode
+- mysql5.7/mysql8
+- api测试工具
+
+### 2. 前端开发
+
+- 使用官方vite创建vue项目即可
+- 安装elmentplus或其他ui框架
+- 安装vue-router
+- 安装axios
+
+直接给出依赖：
+
+```js
+{
+  "name": "aops-fe",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "axios": "^1.6.0",
+    "element-plus": "^2.4.1",
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "vite": "^4.5.0"
+  }
+}
+```
+
+- 编写功能组件，比如说这里编写一个用户信息增删改查的user.vue组件，具体代码可以关注仓库。有问题可以私信留言。
+
+### 3. 后端开发
+
+- springboot2.7初始化项目
+- mybaitplus安装
+- 代码生成
+- 创建一个实体类，定义用户信息字段
+- 创建controller类，处理用户表增删改查操作
+- 创建一个 UserService 接口和其实现类，定义用户表的增删改查操作：
+- 运行
+
+
+### 4.测试部署
+
+- 测试前后端接口连通
+- 前后端打包部署至服务器
+- 详细情况后期分享
+
+
+
+Vue3和Spring Boot的结合可以让我们更加高效地进行全栈开发。其中，Vue3的灵活性和Spring Boot的便利性使得开发过程更加流畅，而用户信息增删改查应用的开发则让我们更好地理解了全栈开发的全过程。若有疑问或需要其他技术栈的全栈开发教程，欢迎大家留言交流！
+
+## AI绘图
+
+今天试用了下AI绘图，不得不说，MJ真的很强大，这是生成的图，分享给大家看看！只是使用中文生成还不太准确，最好用英文调试！
+
+
+
+
+
+
+
+
+
+
+
 
 ## 2023年10月30日
 
