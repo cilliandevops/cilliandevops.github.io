@@ -1,3 +1,100 @@
+## 2023年11月2日
+
+## 近日见闻
+
+1. Kotlin 1.9.20 版本已发布，适用于所有目标的 K2 编译器已进入 Beta 阶段，Kotlin Multiplatform 已进入稳定阶段。 --Kotlin
+
+2. vivo 发布自研操作系统蓝河 (BlueOS)，系统框架采用 Rust 编写. --vivo
+
+3. 新款 MacBook Pro “减配”：内存带宽缩水、14寸M3入门款2个USB-C接口 --oschina
+
+4. youlai-mall v2.4.1 已经发布，全栈开源商城项目。 --youlai
+
+## async/await和promise链
+
+`async/await` 和 Promise 链都是 JavaScript 中处理异步操作的方法，但它们的编写方式和可读性有所不同。让我们分别了解一下它们的区别和作用。
+
+### Promise 链
+
+Promise 是一种编程范式，用于处理异步操作。它是一个表示异步操作结果的对象，可以是成功（resolved）或失败（rejected）的状态。Promise 的出现解决了回调地狱（callback hell）的问题，使得异步代码更容易处理和组织。
+
+Promise 链是一种使用 Promise 的编程模式。在 Promise 链中，你可以通过 `.then()` 和 `.catch()` 方法链接多个异步操作。这样做的好处是，可以按顺序执行异步操作，并在前一个操作完成后传递结果给下一个操作。
+
+下面是一个使用 Promise 链的示例：
+
+```javascript
+fetchData()
+  .then((data) => processData(data))
+  .then((processedData) => saveData(processedData))
+  .catch((error) => handleError(error));
+```
+
+在这个示例中，我们首先调用 `fetchData()` 获取数据，然后使用 `.then()` 对数据进行处理，接着将处理后的数据保存，最后使用 `.catch()` 捕获并处理错误。
+
+### async/await
+
+`async/await` 是一种基于 Promise 的异步编程语法糖，引入于 ECMAScript 2017 标准。它使得异步代码看起来和同步代码类似，从而更容易阅读和理解。
+
+`async` 关键字用于声明异步函数，这样的函数将返回一个 Promise。`await` 关键字用于等待一个 Promise 的结果，它只能在 `async` 函数内部使用。
+
+下面是一个使用 `async/await` 的示例：
+
+```javascript
+async function handleData() {
+  try {
+    const data = await fetchData();
+    const processedData = await processData(data);
+    await saveData(processedData);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+handleData();
+```
+
+在这个示例中，我们使用 `await` 关键字等待异步操作完成，使得代码看起来像同步代码。这样可以提高代码的可读性。
+
+### 区别与作用
+
+1. 语法和可读性：`async/await` 使得异步代码看起来像同步代码，提高了可读性。而 Promise 链使用了 `.then()` 和 `.catch()` 方法，导致代码嵌套，可读性略差。
+2. 错误处理：`async/await` 允许你使用 `try/catch` 块处理异步错误，这与同步代码的错误处理方式相同。而 Promise 链需要使用 `.catch()` 方法捕获错误。
+3. 返回值：`async` 函数总是返回一个 Promise，这使得你可以将多个 `async` 函数组合在一起。Promise 链的返回值也是一个 Promise。
+
+尽管 `async/await` 和 Promise 链在功能上没有本质区别，但它们在语法和可读性上有所不同。你可以根据个人喜好和项目需求选择使用哪种方式处理异步代码。
+
+
+## 同步代码、异步代码
+
+同步代码和异步代码是编程中两种重要的执行方式，它们主要的区别在于是否需要等待操作完成后才进行下一步操作。
+
+1. **同步代码**：在执行同步代码时，每一步操作都会按照代码的书写顺序依次执行，只有当当前的操作完成后，才会执行下一步操作。也就是说，每一步操作都会阻塞后面的代码，直到这一步操作完成。例如：
+
+```javascript
+let result = database.query("SELECT * FROM posts");
+console.log(result); 
+console.log("Done");
+```
+
+在这个例子中，首先执行数据库查询，然后等待查询结果返回，查询完成后才会执行后面的打印操作。如果数据库查询需要花费很长时间，那么后面的打印操作就需要等待相应的时间。
+
+2. **异步代码**：不同于同步代码，异步代码不会等待当前操作完成后才执行下一步操作。也就是说，如果一步操作需要花费很长时间，异步代码不会阻塞，而是继续执行下面的代码。当这步操作完成后（通常通过回调函数、Promise 或 async/await 来通知），再处理这步操作的结果。例如：
+
+```javascript
+database.query("SELECT * FROM posts", function(result) {
+    console.log(result);
+});
+console.log("Done");
+```
+
+在这个例子中，数据库查询的操作是异步的。执行到数据库查询这步时，代码不会等待查询结果，而是直接执行后面的打印操作。当数据库查询完成后，会调用提供的回调函数来处理查询结果。
+
+异步编程是 JavaScript 中非常重要的部分，因为它允许处理耗时的操作，比如网络请求、文件读写等，而不阻塞代码的执行。这是 JavaScript 能够在浏览器中提供流畅用户体验的关键原因之一。
+
+
+
+
+
 ## 2023年11月1日
 
 ## 近日见闻
