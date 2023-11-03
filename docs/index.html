@@ -139,13 +139,13 @@ plugins: [
       hook.beforeEach(function(html) {
         var url =
           'https://www.cillian.website' ;
-        var editHtml = '[📝 编辑文档](' + url + ')\n';
+        var editHtml = '[📝](' + url + ')\n';
 
         return (
           editHtml +
           html +
           '\n\n---\n\n---\n'+
-         '⏱最近更新时间：{docsify-updated} '  
+         '⏱{docsify-updated} '  
         );
       });
     }
@@ -250,8 +250,8 @@ plugins: [
       <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
       <script>
         document.body.oncopy = function () {
-          swal("希里安提醒",
-               "铁子你好！若要转载或引用请务必保留原文链接，并申明来源。",
+          swal("希里安提醒/Notice",
+               "铁子你好！文章持续更新中，记得点个关注。\n  Hi! Dont Forget Subscribe",
                 "success"); };
       </script>
 
