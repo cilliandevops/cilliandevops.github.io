@@ -1,3 +1,174 @@
+## 2023年11月6日
+
+## 近日见闻
+
+1. 马斯克旗下公司 xAI 的第一款AI模型曝光！名为：Grōk ，有望成为ChatGPT最强竞品！--马斯克
+
+2. Rickrack焰火十二卷 v2.8.41更新，开源调色板软件。--rickrack
+
+3. Ant Design 5.11.0 发布，企业级 UI 设计语言和 React 实现。 --AntDesign
+
+4. 谷歌 Chrome 开发者博客官宣：Chrome 已默认启用 WebAssembly 垃圾回收 (WasmGC) 功能 —— 能够将具有 GC 的编程语言编译为 WebAssembly (Wasm)。 --google
+
+
+## next.js快速创建一个示例应用
+
+
+首先，我们使用create-next-app创建一个新的Next.js应用：
+
+```bash
+npx create-next-app@latest my-app
+```
+
+注意：
+```js
+Need to install the following packages:
+create-next-app@14.0.1
+Ok to proceed? (y) y
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'create-next-app@14.0.1',
+npm WARN EBADENGINE   required: { node: '>=18.17.0' },
+npm WARN EBADENGINE   current: { node: 'v18.16.0', npm: '9.8.1' }
+```
+最新版本，需要node版本大于等于18.17.0，需要注意下。
+
+然后，进入新创建的应用目录：
+
+```bash
+cd my-app
+```
+
+在`pages`目录下，你会发现一个名为`index.js`的文件，这个文件对应的是应用的主页。
+
+```jsx
+import React from 'react';
+import Link from 'next/link';
+
+function HomePage() {
+  return (
+    <div>
+      <h1>Welcome to Next.js!</h1>
+      <p>This is the home page of our Next.js application.</p>
+      <p>
+        <Link href="/about">
+          <a>About</a>
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+export default HomePage;
+```
+
+然后，我们要创建一个关于页面。在`pages`目录下，创建一个新的文件`about.js`：
+
+```jsx
+import React from 'react';
+import Link from 'next/link';
+
+function AboutPage() {
+  return (
+    <div>
+      <h1>About</h1>
+      <p>This is the about page of our Next.js application.</p>
+      <p>
+        <Link href="/">
+          <a>Home</a>
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+export default AboutPage;
+```
+
+现在，启动应用：
+
+```bash
+npm run dev
+```
+
+在浏览器中访问http://localhost:3000，看到主页可以点击"About"链接到关于页面，然后在关于页面点击"Home"链接返回主页。
+
+这只是一个非常基础的Next.js应用，而Next.js的功能远不止这些，想要深入学习，需要不断的实践和联系。
+
+
+
+
+
+
+
+
+## 2023年11月3日17:05:09
+
+## 近日见闻
+
+1. Transformers.js 2.7.0 发布，Transformers.js 支持在浏览器中实现最先进的机器学习 —— 无需服务器。它提供预训练模型和熟悉的 API，支持自然语言处理、计算机视觉、音频和多模态领域的任务。借助 Transformers.js，开发者可以直接在浏览器中运行文本分类、图像分类、语音识别等任务，这使其成为 ML 从业者和研究人员的强大工具。最近发布的 Transformers.js 2.7.0 添加了一项重要功能：文本转语音。 --Transformer
+
+2. SQLite 3.44.0发布,SQLite 是一个C语言库，实现了一个小型、快速、独立、高可靠性、全功能的 SQL数据库引擎。SQLite 是世界上使用最多的数据库引擎。SQLite的源代码属于公共领域，每个人都可以免费使用，用于任何目的。--SQLite
+
+3. Redis 创始人用 C 语言编写最小聊天服务器：Smallchat,详情查看github。--redis社区
+
+4. 阿里云推出了一款基于通义大模型的智能编码辅助工具 —— 通义灵码。 --阿里云
+
+## python调用chatgp3.5接口
+
+以下是使用Python调用ChatGPT接口的示例代码。在使用此代码之前，请确保已安装`requests`库。在命令行中运行以下命令以安装：
+
+```bash
+pip install requests
+```
+
+然后，使用以下示例代码来调用ChatGPT API。请记住将`your_openai_api_key`替换为您的实际API密钥，并根据需要修改输入文本和API参数。
+
+```python
+import requests
+import json
+
+# 替换为您的API密钥
+api_key = 'your_openai_api_key'
+
+# 设置请求头
+headers = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Bearer {api_key}'
+}
+
+# 设置请求的URL
+url = 'https://api.openai.com/v1/engines/davinci-codex/completions'
+
+# 设置请求参数
+prompt = 'Translate the following English text to chinese: "{Hello, how are you?}"'
+max_tokens = 50
+n = 1
+temperature = 0.5
+
+payload = {
+    'prompt': prompt,
+    'max_tokens': max_tokens,
+    'n': n,
+    'temperature': temperature
+}
+
+# 发送POST请求并获取响应
+response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+# 解析响应内容
+data = response.json()
+
+if 'choices' in data:
+    for choice in data['choices']:
+        print(choice['text'])
+else:
+    print("Error:", data)
+```
+
+
+
+
+
 ## 2023年11月2日
 
 ## 近日见闻
