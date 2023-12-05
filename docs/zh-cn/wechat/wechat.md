@@ -1,3 +1,1079 @@
+## 2023年11月22日
+
+如何解决Linux磁盘空间告急：详细解决方案
+
+## 恢复Linux磁盘空间全面指南
+
+运维告警里比较常见的就是磁盘空间超过告警阀值的情况，遇到这种情况是最常见的，只要不影响业务以及不是快速占满磁盘的情况下，就可以慢慢着手解决问题。以下是比较常用的步骤。
+
+
+### 步骤1：检查磁盘空间
+
+首先，你需要知道问题的所在。通过终端，你可以使用 `df` 命令查看磁盘空间使用情况。
+
+```bash
+df -h
+```
+
+这个命令会列出每个挂载点的可用空间，`-h` 参数让信息以易读的格式（如GB、MB）显示。
+
+### 步骤2：找出占用空间最多的文件和目录
+
+一旦你知道了空间资源紧张的分区，你可以使用 `du` 命令来找出哪些文件或目录占用了最多的空间。
+
+```bash
+du -sh /path/to/directory | sort -rh | head -20
+```
+
+这个命令将在指定目录下显示占用空间最大的前20个文件或目录。
+
+使用ncdu工具
+
+ncdu是一个用于查看磁盘使用情况的简单工具，提供了一个基于文本的用户界面。
+
+安装ncdu（如果尚未安装）：
+
+```bash
+sudo apt-get install ncdu # Debian/Ubuntu系统
+sudo yum install ncdu # CentOS系统
+```
+使用ncdu扫描文件系统：
+
+```bash
+ncdu /
+```
+
+### 步骤3：删除不必要的文件
+
+检查列表中的项目，看看是否有不再需要的文件或者可以转移到其他存储设备的数据。使用 `rm` 命令来删除文件：
+
+```bash
+rm /path/to/unwanted/file
+```
+
+对于目录，你可以使用带有 `-r`（递归）标志的 `rm` 命令：
+
+```bash
+rm -r /path/to/unwanted/directory
+```
+
+**注意：** 使用 `rm` 命令时要非常小心，因为删除后无法恢复。
+
+使用find命令删除旧文件
+
+自动查找并删除一定时间前的文件：
+
+```bash
+find /path/to/directory -type f -mtime +30 -exec rm {} \;
+```
+这个命令会删除30天前的文件。
+
+### 步骤4：清理缓存和临时文件
+
+Linux系统经常存储临时文件和缓存，这些文件随着时间的推移可能会占用大量的空间。使用以下命令清理：
+
+```bash
+sudo apt-get clean       # 对于Debian系的系统
+sudo yum clean all       # 对于RedHat系的系统
+```
+
+此外，你可以手动删除 `/tmp` 目录下的文件。
+```bash
+sudo rm -rf /tmp/*
+```
+### 步骤5：日志文件管理
+
+日志文件是另一个可能占用大量空间的来源。查看 `/var/log` 目录，并考虑删除旧的或不必要的日志文件。你可以使用 `logrotate` 工具来帮助管理日志文件。
+
+```bash
+sudo find /var/log -type f -name "*.log" -mtime +30 -exec rm {} \;
+```
+
+### 步骤6：查找并删除重复文件
+
+有时候，系统中可能会有不小心复制的重复文件。你可以使用 `fdupes` 或 `rdfind` 等工具来找到和删除这些文件。
+
+```bash
+sudo apt-get install fdupes # Debian/Ubuntu系统
+sudo yum install fdupes # CentOS系统
+
+fdupes -r /path/to/directory
+```
+
+### 步骤7：磁盘配额管理
+
+如果是多用户系统，考虑设置磁盘配额来限制用户使用的空间量，这可以通过 `quotacheck`、`quotaon` 和 `edquota` 等命令完成。
+
+### 步骤8：扩展磁盘空间
+
+扩展硬盘空间最直接，这可能包括添加新的硬盘、调整分区大小或使用网络附加存储（NAS）。
+
+### 步骤9：使用文件系统特性
+
+如果文件系统支持，比如xfs可以通过启用压缩来节省空间。
+
+### 步骤10：压缩文件
+
+如果它们不是经常访问，可以使用压缩工具如tar和gzip来减少它们的大小：
+```bash
+tar -czvf name-of-archive.tar.gz /path/to/directory
+```
+
+磁盘空间的管理是Linux系统维护的重要组成部分。通过定期检查和清理，可以确保系统运行顺畅，并避免因磁盘空间不足导致的问题。始终在执行删除操作前备份重要数据，以防意外发生。
+
+
+
+
+
+## 2023年11月20日
+
+## 近日见闻
+
+1. Pear Admin 4.x 迎来了正式的发布。
+
+2. OpenAI 前CEO和总裁Sam Altman&Greg Brockman加入微软 --Microsoft
+
+3. 近日，河南电视台都市频道节目报道称，河南周口联通为了强迫用户更换光猫，公司在后台停掉用户的宽带账号，导致用户无法上网，然后让工程师上门 “维修”，谎称光猫损坏，需要花 299 元换新。更换完后，联通再在后台恢复用户的网络。只能说牛！
+
+4. Apache APISIX 3.7.0版本已经发布，带来了一系列新功能、Bug 修复和相关用户体验优化。快去体验一下！
+
+## 如何查看k8s中pod所用的字体？
+
+作为一位k8s操作手，这个过程需要我们深入Pod的内部环境，利用Linux系统的工具进行探查。
+
+### 第一步：确定目标Pod
+
+开启命令行终端，使用`kubectl`这个强大的工具列出当前命名空间下的所有Pod。这就像扫描我们的集群，找到那个正在运行我们应用的容器实例：
+
+```sh
+kubectl get pods -n xxx
+```
+
+细心观察返回的列表，确定你要检查的Pod名称。
+
+### 第二步：进入Pod
+
+接下来，我们需要进入Pod的Shell环境。使用`kubectl exec`命令，这相当于我们在远程通过SSH进入一个服务器：
+
+```sh
+kubectl exec -it <pod-name> -- /bin/sh
+```
+
+替换`<pod-name>`为实际的Pod名称。`/bin/sh`是我们用来和Pod进行交互的Shell环境，有些Pod可能需要你使用`/bin/bash`。
+
+### 第三步：列出Pod中的字体
+
+现在已经处于Pod的内部，可以使用`fc-list`命令来列出所有安装的字体。这就像用目录扫描工具来查看服务器上的文件：
+
+```sh
+fc-list
+```
+
+一般如果用到渲染字体值之类的需求，一般使用这个命令查看即可。
+```
+DejaVuSerif-Bold.ttf: DejaVu Serif粗体
+DejaVuSansMono.ttf: DejaVu Sans Mono普通字体
+DejaVuSans.ttf: DejaVu Sans普通字体
+DejaVuSans-Bold.ttf: DejaVu Sans粗体
+DejaVuSansMono-Bold.ttf: DejaVu Sans Mono粗体
+DejaVuSerif.ttf: DejaVu Serif普通字体
+```
+这些字体文件位于/usr/share/fonts/truetype/dejavu/目录下。DejaVu系列字体是开源字体，常用于Linux和其他操作系统中。它们是DejaVu字体家族的一部分，提供了一系列字体风格和变体，包括正常、粗体、斜体等。
+
+
+如果发现系统中没有`fc-list`命令，说明`fontconfig`包尚未安装。可以这么安装：
+
+```sh
+apt-get update && apt-get install -y fontconfig
+```
+
+注意，上述命令假设你的容器基于Debian或Ubuntu。如果是基于Alpine Linux的容器，你需要使用`apk add`来安装。
+
+### 第四步：完成检查和退出
+
+在完成字体的检查后，就像离开服务器前注销用户一样，我们通过输入`exit`命令安全退出Pod：
+
+```sh
+exit
+```
+
+要注意的是，这些操作需要Pod具有足够的权限，而且你的容器镜像中需要包含相关的工具。如果你发现在这个过程中出现任何问题，可能需要回到Dockerfile中去查看是否有必要添加额外的工具或者字体包。如果没有权限的话，安装也会受限制。
+
+
+## 2023年11月18日
+
+重大新闻！奥特曼被OpenAI开除了！
+
+
+## 怎么就被开除了？
+
+早上被刷圈了，先看看发生什么了。据新闻了解，11月17日，人工智能研究公司OpenAI首席执行官山姆·奥特曼（Sam Altman）突然离职。我们先上官网看看怎么个事？
+
+![Alt text](image.png)
+
+以下是结合工具翻译，原文大致内容如下：
+
+开放人工智能（OpenAI）的董事会宣布，Sam Altman将离任首席执行官并离开董事会。同时，该公司的首席技术官Mira Murati将作为临时首席执行官领导OpenAI。
+
+Mira在OpenAI担任领导团队成员已有五年时间，对于OpenAI发展成为全球人工智能领导者发挥了至关重要的作用。她拥有独特的技能组合，对公司的价值观、运营和业务有深刻理解，并且已经负责公司的研究、产品和安全职能。基于她长期的任职时间和与公司各个方面的密切合作，包括在人工智能治理和政策方面的经验，董事会认为她非常适合这个角色，并期待在进行正式搜索永久首席执行官的同时实现无缝过渡。
+
+董事会经过审慎的审查流程后决定Altman先生离任，认为他在与董事会的沟通中缺乏一贯的坦诚，阻碍了董事会行使职责的能力。董事会不再对他继续领导OpenAI的能力表示信心。
+
+董事会在一份声明中表示：“OpenAI旨在推动我们的使命：确保人工通用智能造福全人类。董事会始终致力于履行这一使命。我们对Sam在OpenAI的创立和发展中的许多贡献表示感谢。与此同时，我们相信在我们继续前进时需要新的领导力。作为公司研究、产品和安全职能的领导者，Mira非常有资格担任临时首席执行官。我们对她在这个过渡期内领导OpenAI的能力充满信心。”
+
+OpenAI的董事会由OpenAI首席科学家Ilya Sutskever、独立董事Quora首席执行官Adam D’Angelo、技术企业家Tasha McCauley和乔治城大学安全与新兴技术中心的Helen Toner组成。
+
+作为过渡的一部分，Greg Brockman将辞去董事会主席职务，但将继续担任公司内的职位，并向首席执行官汇报。
+
+OpenAI成立于2015年，是一个非营利性机构，其核心使命是确保人工通用智能造福全人类。2019年，OpenAI进行了重组，以确保公司能够筹集资金追求这一使命，同时保留非营利机构的使命、治理和监督。董事会的大部分成员是独立的，独立董事在OpenAI没有股权。尽管公司经历了巨大的增长，但董事会始终承担着推进OpenAI使命和保护章程原则的基本治理责任。
+
+
+对于业内人士来说可谓是震惊，毕竟奥特曼是很多人心中的英雄，前谷歌首席执行官就Eric Schmidt就是在社交媒体上这么说，认为奥特曼将openai从一无所有发展成价值将近千亿美金的企业，并做出了永久改变人类世界的事情。
+
+
+咱再详细解下奥特曼
+
+Sam Altman于1985年出生，从小在密苏里州圣路易斯长大，他从小就对计算机科学和技术表现出浓厚的兴趣，8岁就拥有了自己第一台电脑。儿时偶像是史蒂夫乔布斯。在上高中时，他开始学习编程，并在互联网初期就开始开发软件。
+
+Altman进入斯坦福大学攻读计算机科学学位，但在一年级结束时辍学。他决定投身创业，并与一位朋友共同创立了一家名为Loopt的移动定位社交网络公司。这家公司于2005年成立，成为全球首批推出基于位置的社交网络应用的企业之一。
+
+Loopt早期获得了多轮融资，并迅速发展壮大。2012年3月，Green Dot Corporation一家金融科技公司以4340万美元收购了Loopt。这次交易使Altman成为了一名年轻的企业家，并为他日后的创业生涯奠定了基础。
+
+在Loopt被收购后，Altman成为了Y Combinator的创业伙伴。Y Combinator是一家知名的创业加速器和风险投资公司，帮助初创企业获得资金和资源，并提供指导和支持。Altman在Y Combinator的领导下推动了公司的发展，并为全球范围内的许多成功创业公司提供了支持和指导。
+
+2014年2月，Altman 被 Y Combinator 联合创始人Paul Graham任命为总裁。在他的领导下，Y Combinator继续推动着创业公司的发展，并成为全球范围内最具影响力的创业加速器之一。
+
+随着时间的推移，Altman对人工智能的发展产生了浓厚的兴趣，并相信这将对全人类产生重大影响。因此，他于2015年与其他合伙人共同创立了OpenAI，这是一个致力于推动人工通用智能发展的非营利组织。作为OpenAI的创始人之一，Altman在公司初期发挥了重要的领导作用。
+
+除了OpenAI和Y Combinator，Altman还是许多知名科技公司的董事会成员，包括Reddit、Palantir Technologies和Coinbase等。他也积极投资和支持其他初创企业，并在科技界广泛发表演讲和写作，分享他对技术和创新的见解和观点。
+
+2017 年，Altman因通过 Velocity 创业计划为企业提供支持而获得加拿大滑铁卢大学荣誉 工程博士学位。
+
+看完以上，大家什么感受？这个开除不像咱一般人的开除，咱们被开除了，只能卷铺盖回家了。人家有能力，况且又投资了一堆公司，可能只是换个地方而已。好了今天的介绍就到这了。
+
+
+## 聊点别的
+
+1. 周末到了，铁铁们都在干嘛？没事的话可以来技术交流群闲聊哈，都是一群热爱技术的人，会分享一些技术干货和资料，等你加入哈。
+
+2.  世纪难题，待会吃点啥？
+
+参考资料：
+
+[1]https://openai.com/blog/openai-announces-leadership-transition
+
+[2]https://en.wikipedia.org/wiki/Sam_Altman
+
+[3]https://web.archive.org/web/20140625021419/http://ycombinator.com/people.html
+
+
+
+## 2023年11月17日
+
+
+
+## 阿里云对象存储OSS
+
+最近业务在用腾讯的oss，然后看阿里云在做活动，我这边看还可以使用，所以申请来试用下，特此分享给大家。
+
+首先登录阿里云官网，在产品一栏找到对象存储OSS栏目，点进去就可以了。
+
+我们可以看到侧面导航栏主要分为产品概述、快速入门、操作指南、开发参考、实践教程和服务支持六部分。我们就围绕这几部分简单介绍。
+
+### 产品概述
+
+阿里云对象存储OSS（Object Storage Service）具体介绍可以看官网，总之简单理解就是一个可自定义的网盘，我们可以使用这个东西存储和管理我们使用的各种类型的电子数据，包括文本、图片、视频、音频等等。可以实现存储备份、静态网站的备份、图片处理、文件分发等等功能。
+
+然后就是了解下产品如何计费的，可以通过按量、资源包、预留空间等方式计费，一般使用资源包比较划算。目前个人用户可以免费试用20G容量3个月。
+
+存储类型有：标准、低频访问、归档、冷归档和深度归档，就是从访问速度和频率依次降低的排序，全面覆盖从热到冷的数据存储场景。
+
+
+### 快速入门
+
+有几种方式，一种是web控制台、一种是命令行工具ossutil、还有图形化工具ossbrowser和sdk的方式实现快速入门。
+
+这里介绍下通过控制台使用
+
+- 注册阿里云账号并开通OSS服务。
+- 创建存储空间（Bucket），用于存储数据。
+- 根据需要设置存储空间的访问权限、生命周期规则等。
+- 使用阿里云提供的SDK或API进行数据的上传、下载、删除等操作。
+- 根据业务需求，使用OSS的其他功能如图片处理、视频转码等。
+- 分享文件。
+
+### 操作指南
+
+这部分里面就比较详细了，包括实际使用的各种点都有介绍，这部分我这里只能挑一部分说，详细的大家可以上官网查看。包括访问域名、存储类型、存储空间、权限控制、数据安全、数据管理等等。
+
+- 涉及oss访问域名的规则、地域
+- 存储类型
+- 存储空间
+- 上传下载
+- 权限控制
+- 数据安全
+- 数据管理
+- 监控、日志
+- 数据处理
+- 加速设置等等
+
+### 开发参考
+
+这一部分就是开发人员用到的，可以使用接口进行增删改查、或者使用SDK进行自定义的处理和开发，感兴趣的可以看一下，基本包含主流语言。还有就是常用工具比如命令行、图形化、数据迁移等等。这里OSS是一个REST服务。可以使用REST API或封装了REST API的阿里云SDK向OSS发起请求。认证系统收到请求后，会通过凭证验证请求的发送者身份。身份验证成功后，就可以操作相应的OSS资源。
+
+### 实践教程
+
+这一部分主要介绍数据迁移、数据备份和容灾、数据直传OSS、数据处理与分析、音视频转码、使用Terraform管理 OSS等操作，帮助高效地使用OSS，满足业务需求。
+
+
+好了，到这里关于阿里云oss大致的都介绍完了，心动不如行动，实践出真知，实际去体验下，才会有自己的评价！我也先去用用，后期3个月以内分享实际操作给大家！
+
+## 聊点别的
+
+- 各位铁铁（不再说读者了，搞得和大家距离好远的感觉）对于自己的职业怎么看呢？是否有职业生涯的规划呢？在职业发展或者技术道路上是否有困惑或遇到瓶颈呢？打算后期通过访谈或者直播的方式请一些行业大佬来和大家聊一聊，一起探讨下，感兴趣的铁铁可以关注下或者加一下交流群，或者提前后台留言给我。
+
+- 天冷了，咳嗽的多了，各位铁铁注意保暖！
+
+- 好了，今天那就这些，待会吃点啥？
+
+
+
+## 2023年11月16日
+
+## 近日见闻
+
+1. nodejs-21.2.0版本发布，更新速度真的快。
+
+2. 俄罗斯操作系统 Aurora OS 5.0 全新UI亮相。
+
+3. 小米澎湃OS刚刚在微博宣布，Xiaomi Vela采用Apache 2.0 License 面向全球软硬件开发者正式开源。
+
+4. 开源中国将在年末推出大模型托管平台，大量人才招募中
+
+
+## 腾讯云轻量数据库
+
+这两天腾讯在搞活动，就申请免费体验了一个月的轻量数据库，感觉很不错，分享给大家。
+
+首先说说什么是轻量应用服务器，官方解释就是新一代开箱即用、面向轻量应用场景的云服务器产品，可以建站、小程序、电商、云盘、图床等各类开发测试和学习环境，相比普通云服务器更加简单易用。
+
+轻量服务器是自带模板的，就是说包含预置的操作系统和软件，镜像就是装机盘，通过镜像创建一台或者多台轻量应用服务器。
+
+
+包含五部分镜像：应用、系统、docker基础、自定义和共享镜像
+
+### 应用镜像
+
+- 宝塔 Linux 面板腾讯云专享版
+- WordPress
+- SRS 音视频服务器
+- 互动直播房间服务
+- Typecho
+- Cloudreve
+- Matomo
+- LAMP
+- Node.js
+- Theia IDE
+- Docker CE
+- K3s
+- 长安链 ChainMaker
+- 宝塔 Windows 面板腾讯云专享版
+- ASP.NET
+- Cloud Studio 1.0.1
+- OpenFaaS
+
+### 系统
+
+- Windows Server 2022
+- Windows Server 2019
+- Windows Server 2016
+- Windows Server 2012 R2
+- CentOS 7.6
+- CentOS Stream 8
+- Ubuntu 18.04.1 LTS
+- Ubuntu 20.04 LTS
+- Ubuntu 22.04 LTS
+- Debian 10.2
+- Debian 11.1
+- OpenCloudOS 8.6
+
+### Docker基础
+
+- CentOS 8.2 - Docker 20
+- CentOS 7.6 - Docker 20
+- Ubuntu 20.04 - Docker 20
+
+然后和CVM有什么区别，轻量适合中小企业和开发者、CVM适合中大型企业用户，适合更轻量的业务场景，价格也更优惠、无需自己动手管理。
+
+那我们快速使用一下轻量云数据库
+
+登录免费专区，申请试用
+
+然后登录控制台选择轻量应用服务器中的数据库，点击创建
+
+选择合适的版本，创建即可。如果需要外网访问，开启即可
+
+登录后可以查看详细的数据库情况，可以一键备份与回滚。
+
+
+
+## 2023年11月15日
+
+## 近日见闻
+
+1. 铁铁们，这两天成都气温一下子就下降了，你们哪里怎么样，注意保暖。
+
+2. 看新闻，最近各大厂商开始研制自己的系统且朝着不兼容安卓系统的方向发展，这个事大家怎么看?
+
+3. ChatGPT Plus临时暂停新用户注册，CEO奥特曼称服务器扛不住了，你们都用上plus了吗？
+
+
+## tssh客户端管理工具
+
+之前一直想自己实现一个比较轻量而且有管理功能终端工具，尝试前端用xterm，通过websocket和后端服务器连接，实现web终端功能。最近逛github发现一个项目，挺有意思，分享给大家，这里涉及两个项目，一个是luanruisong/tssh，另一个项目应该是tssh的plus版本Trzsz-ssh。
+
+下面一块来看看tssh，这个tssh开发作者叫anwu安伍，是个golang开发工程师，这里是关于tssh的心路历程，看了博客发现作者是一个具有非常有趣的灵魂的人<https://luanruisong.com/post/golang/tssh/>，光是各种贴图就把人逗笑了。
+
+tssh定位是一个轻量ssh管理工具，联想到实际工作中，如果有一款直接可以在命令行中连接服务器的工具是极好的，因为比如我在开发过程中，不用再额外打开另一个终端连接工具。虽然有微软自带的，但是需要多开窗口才能实现管理功能。
+
+这里作者分成立需求、开搞、支撑需求、基础需求、整合需求、一键安装几个部分，实现了ssh登录、tab不全、密码和秘钥登录等功能。并解决了在windows终端大小获取的问题，看完之后确实收获不少。而且作者的讲解方式非常有趣，令人印象深刻。
+
+安装方式：
+
+$ brew install tssh
+
+以下是使用效果图：
+
+
+## Trzsz-ssh管理工具
+
+发现tssh虽然日常使用足够，但是这个版本的tssh支持了上传下载功能，官网地址如下：
+<https://trzsz.github.io/cn/ssh>
+
+简介中说，支持选择和搜索服务器、支持vim操作习惯、一次选择多台服务器，批量登录而且
+支持 trzsz (trz / tsz) 文件传输工具。
+
+这里安装方式很多，基本覆盖常用平台，根据自己平台选择安装即可。具体的试用还需大家多多研究。
+
+以下是官方录屏演示：
+
+
+## 2023年11月14日
+
+Axios曝高危漏洞，私人信息还安全吗？
+
+
+Axios，作为广泛应用于前端开发中的一个流行的HTTP客户端库，因其简洁的API和承诺（promise）基础的异步处理方式，而得到了众多开发者的青睐。然而，近期在安全社区中，Axios被报告存在一个重要漏洞，该漏洞涉及其对跨站请求伪造（CSRF）保护机制的处理。
+
+## 描述
+
+在 Axios 1.5.1中发现的一个问无意中泄露了存储在cookie中的机密 XSRF-TOKEN，方法是将其包含在向任何主机发出的每个请求的 HTTP 标头 X-XSRF-TOKEN 中，从而允许攻击者查看敏感信息。当XSRF-TOKEN cookie可用且withCredentials设置已启用时，该库会在对任何服务器的所有请求中使用秘密的XSRF-TOKEN cookie值插入X-XSRF-TOKEN头。如果恶意用户设法获取这个值，它可能会导致绕过XSRF防御机制。
+
+NVD发布日期： 2023-11-08
+
+CVE字典条目： CVE-2023-45857
+
+漏洞类型： CWE-359 将私人信息暴露给未经授权的行为者
+
+严重性： 高
+
+影响度： 广泛
+
+
+## 什么是CWE0359
+
+详细可以查看官网介绍：```https://cwe.mitre.org/data/definitions/359.html```
+
+CWE-359:将私人个人信息暴露给未经授权的行为者,是 Common Weakness Enumeration（共同弱点枚举）中的一个条目，代表 "Exposure of Private Information ('Privacy Violation')"，即 "暴露私人信息（隐私违规）"。这个弱点描述了一个安全问题，其中应用程序未能充分保护用户的敏感数据，导致未经授权的第三方可以访问或泄露这些信息。
+
+在CWE-359的情景下，可能发生的是：
+
+- 应用程序可能会在没有适当加密的情况下传输敏感信息。
+- 存储敏感信息的数据库可能未能正确配置访问控制，导致未授权访问。
+- 应用程序日志可能会记录敏感信息，如果没有得到适当保护，可能会被泄露。
+- 错误消息或页面上可能会显示敏感信息，没有经过适当处理，导致在用户界面上泄露。
+
+CWE-359 违反了用户隐私权，可以导致个人数据泄露，这对个人和组织都可能产生严重后果。为了避免此类弱点，开发者和组织应实施严格的数据处理和存储政策，定期进行安全审计，并确保使用最佳实践来保护个人数据。对于开发人员而言，理解CWE-359并采取预防措施对于创建安全软件来说至关重要。
+
+## 什么是CSRF、XSRF
+
+跨站请求伪造（CSRF）是一种网络攻击，它允许攻击者利用用户的登录状态在另一个网站上对目标应用程序发起恶意请求。这种攻击的危险之处在于，它可以在用户毫不知情的情况下，以用户的身份在目标网站上进行操作，例如更改密码、转账等。
+
+`XSRF-TOKEN` 是一种常用的防御措施，它涉及到在客户端生成一个令牌（Token），这个令牌会在进行敏感操作时由服务器进行验证。该令牌通常在用户打开表单时由服务器生成，并作为表单数据的一部分发送回服务器。服务器将验证提交的表单中的`XSRF-TOKEN`是否与用户的会话中存储的令牌相匹配，以确认请求是合法的。
+
+漏洞出现的情况可以是：
+
+1. **服务器配置不当**：如果服务器没有正确设置或验证`XSRF-TOKEN`，那么即使在客户端设置了令牌，攻击者也可能绕过这种保护机制。例如，如果服务器不验证所有敏感请求的令牌，或者验证逻辑存在缺陷，那么攻击者可以发送未经授权的请求。
+
+2. **客户端实现错误**：客户端代码，比如JavaScript或Web框架，可能没有正确地在每个请求中发送`XSRF-TOKEN`，或者在处理cookies时出现错误，导致令牌不被包含在请求中。
+
+3. **安全策略缺失**：如果网站不使用`XSRF-TOKEN`或类似的防御机制，或者没有将其纳入全面的安全策略中，就可能容易受到CSRF攻击。
+
+查看相关文章：
+```https://portswigger.net/web-security/csrf/preventing```
+```https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html```
+
+为了保护应用程序不受CSRF攻击，你应该：
+
+- 为所有敏感操作使用CSRF令牌。
+- 确保服务器端对所有需要的地方进行令牌验证。
+- 设置和强制执行内容安全策略（Content Security Policy，CSP）以减少跨站脚本（XSS）攻击的风险，XSS攻击可以用来窃取`XSRF-TOKEN`。
+- 确保使用HTTPS来防止中间人攻击，中间人攻击可能会截取令牌。
+- 定期更新和修补所有软件依赖项，包括客户端库和服务器端框架。
+
+
+## 再现
+
+复现步骤
+
+通过运行以下命令使用Next.js的最新版本开始一个新项目：npx create-next-app@latest。然后，使用这个命令安装最新版本的Axios库：npm i axios
+创建一个Axios实例，配置如下，启用跨站点请求伪造（CSRF）保护，通过在请求中包括凭据：
+```javascript
+  const instance = axios.create({
+    withCredentials: true,
+  });
+```
+用特定属性安装XSRF-TOKEN cookie。将cookie值设置为"whatever"，并为"localhost"域配置严格的同站策略：
+```javascript
+    const cookies = new Cookies();
+    cookies.set("XSRF-TOKEN", "whatever", {
+      domain: "localhost",
+      sameSite: "strict",
+    });
+```
+使用你的Axios实例发起跨域请求。在这个例子中，我们向"https://www.com/"发出GET请求，并处理响应及潜在错误：
+```javascript
+    instance
+      .get("https://www.com")
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err.message));
+```
+运行你的项目，并打开浏览器的网络标签进行调试和监控网络活动。
+验证对"https://www.com/"的跨域请求是否包含值为"whatever"的"X-XSRF-TOKEN"头。
+确认在使用Axios实例发送请求时，"XSRF-TOKEN" cookie的值会泄露给任何第三方主机。这对于安全至关重要，因为你不希望将CSRF令牌泄漏给未授权的实体。
+代码片段
+lib/adapters/xhr.js:191
+```javascript
+const xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath))
+```
+预期行为
+预期结果：XSRF-TOKEN不会泄露给第三方主机
+实际结果：XSRF-TOKEN在每个使用Axios实例发出的请求中泄露
+
+Axios 版本
+[v0.8.1] - [v1.5.1]
+
+
+参考资料：
+
+[1] https://portswigger.net/web-security/csrf/preventing
+
+[2] https://github.com/axios/axios/issues/6006
+
+[3] https://nvd.nist.gov/vuln/detail/CVE-2023-45857
+
+[4] https://cwe.mitre.org/data/definitions/359.html
+
+
+
+## 2023年11月13日
+
+## 近日见闻
+
+1. tssh 发布 v0.1.13，支持 Warp终端，支持了更多 ssh功能。支持trzsz的ssh客户端，支持搜索和选择服务器进行批量登录，支持记住密码。  --trzsz-ssh
+
+2. 近日，网易、美团等多家互联网公司发布和鸿蒙系统有关岗位招聘，加快推进鸿蒙原生应用开发转型。数据显示，截至今年 8 月，鸿蒙生态设备数已超过 7 亿，220 万开发者投入到鸿蒙生态的开发。 --oschina
+
+3. Axios有漏洞，在Axios受影响版本中，当 XSRF-TOKEN cookie可用且 withCredentials设置打开时，该库会在对任何服务器的所有请求中将 XSRF-TOKEN cookie 值插入 X-XSRF-TOKEN 标头。攻击者可以通过构造链接、页面等方式诱导受害者点击，以受害者的身份执行未经授权的操作，可能导致账户被接管、数据泄露等安全问题。修复方案：将组件 axios 到 1.6.0 或更高版本。--axios社区
+
+## k8s基础术语词汇表
+```
+- API Group (API 组)
+Kubernetes API 中的一组相关路径。
+
+- API 服务器 (kube-apiserver)
+API 服务器是 Kubernetes 控制平面的组件，它公开了 Kubernetes API，并负责处理接收请求的工作。API 服务器是 Kubernetes 控制平面的前端。Kubernetes API 服务器的主要实现是 kube-apiserver，它设计上考虑了水平扩缩，即可以通过部署多个实例进行扩展。
+
+- CustomResourceDefinition
+通过定制化的代码增加资源对象给你的 Kubernetes API 服务器，而无需编译完整的定制 API 服务器。
+
+- DaemonSet
+确保 Pod 的副本在集群中的一组节点上运行。
+
+- Deployment
+管理多副本应用的一种 API 对象，通常通过运行没有本地状态的 Pod 来完成工作。
+
+- Docker (Docker Engine)
+一种提供操作系统级别虚拟化（也称作容器）的软件技术。
+
+- Dockershim
+Kubernetes v1.23 及之前版本中的一个组件，使得 kubelet 能够与 Docker Engine 通信。
+
+- Finalizer
+带有命名空间的键，告诉 Kubernetes 在特定条件满足后再完全删除被标记为删除的资源。
+
+- Init 容器
+应用容器运行前必须先运行完成的一个或多个 Init 容器。
+
+- Job
+需要运行完成的确定性的或批量的任务。
+
+- kube-controller-manager
+控制平面的组件，负责运行控制器进程。
+
+- kube-proxy
+集群中每个节点上运行的网络代理，实现 Kubernetes 服务概念的一部分。
+
+- Kubectl
+Kubernetes API 与 Kubernetes 集群的控制面进行通信的命令行工具。
+
+- Kubelet
+会在集群中每个节点上运行，确保容器运行在 Pod 中。
+
+- Kubernetes API
+通过 RESTful 接口提供 Kubernetes 功能服务并负责集群状态存储的应用程序。
+
+- LimitRange
+提供约束，限制命名空间中每个容器或 Pod 的资源消耗。
+
+- Master
+遗留术语，作为运行控制平面的节点的同义词使用。
+
+- Minikube
+用来在本地运行 Kubernetes 的工具。
+
+- Pod
+Kubernetes 的原子对象，表示集群上一组正在运行的容器。
+
+- Pod 安全策略
+为 Pod 的创建和更新操作启用细粒度的授权。
+
+- Pod 生命周期
+关于 Pod 在其生命周期中的不同阶段的高层次概述。
+
+- QoS 类 (Quality of Service Class)
+为 Kubernetes 提供了一种分类集群中的 Pod 并做出有关调度和驱逐决策的方法。
+
+- ReplicaSet
+下一代副本控制器。
+
+- ServiceAccount
+为在 Pod 中运行的进程提供标识。
+
+- StatefulSet
+用于管理一组 Pod 的部署和扩缩，并为这些 Pod 提供持久存储和持久标识符。
+
+- UID
+Kubernetes 系统生成的字符串，唯一标识对象。
+
+- 标签 (Label)
+用来为对象设置可标识的属性标记，对用户有意义且重要。
+
+- 对象 (Object)
+Kubernetes 系统中的实体，用于表示集群的状态。
+
+- 服务 (Service)
+将运行在一个或一组 Pod 上的应用程序作为网络服务公开的方法。
+
+- 干扰 (Disruption)
+导致一个或多个 Pod 服务停止的事件，影响依赖于受影响 Pod 的资源，例如 Deployment。
+
+- 工作负载 (Workload)
+在 Kubernetes 上运行的应用程序。
+
+- 混排切片 (Shuffle Sharding)
+一种请求指派给队列的技术，其隔离性优于哈希取模的方式。
+
+- 基于角色的访问控制 (RBAC)
+管理授权决策，允许管理员通过 Kubernetes API 动态配置访问策略。
+
+- 集群 (Cluster)
+一组运行容器化应用程序的工作机器，称为节点。
+
+- 节点 (Node)
+Kubernetes 中的工作机器。
+
+- 静态 Pod (Static Pod)
+由节点上的 kubelet 守护进程直接管理的 Pod。API 服务器不了解其存在。
+
+- 镜像 (Image)
+保存的容器实例，包含了应用运行所需的软件。
+
+- 卷 (Volume)
+包含可被 Pod 中容器访问的数据的目录。
+
+- 控制平面 (Control Plane)
+指容器编排层，暴露 API 和接口定义、部署容器和管理容器生命周期。
+
+- 控制器 (Controller)
+通过监控集群的公共状态，并努力将当前状态转变为期望的状态。
+
+- 控制组 (cgroup; control group)
+一组具有可选资源隔离、审计和限制的 Linux 进程。
+
+- 扩展组件 (Extensions)
+扩展并与 Kubernetes 深度集成支持新型硬件的软件组件。
+
+- 垃圾收集 (Garbage Collection)
+Kubernetes 用于清理集群资源的各种机制的统称。
+
+- 临时容器 (Ephemeral Container)
+可以在 Pod 中临时运行的容器类型。
+
+- 名称 (Name)
+客户端提供的字符串，引用资源 URL 中的对象。
+
+- 名字空间 (Namespace)
+Kubernetes 用来支持集群中资源组隔离的抽象。
+
+- 亲和性 (Affinity)
+一组规则，提供给调度程序在何处放置 Pod 的提示信息。
+
+- 清单 (Manifest)
+JSON 或 YAML 格式的 Kubernetes API 对象规范。
+
+- 日志 (Logging)
+集群或应用程序记录的事件列表。
+
+- 容器 (Container)
+可移植、可执行的轻量级镜像，包含软件及其相关依赖。
+
+- 容器环境变量 (Container Environment Variables)
+以 name=value 形式提供的，在 Pod 中运行的容器所必须的信息。
+
+- 容器运行时 (Container Runtime)
+基础组件，使 Kubernetes 能够有效运行容器。
+
+- 容器运行时接口 (Container Runtime Interface; CRI)
+一组让容器运行时与节点上 kubelet 集成的 API。
+
+- 容忍度 (Toleration)
+核心对象，包含三个必需的属性：key、value 和 effect。允许将 Pod 调度到具有对应污点的节点或节点组上。
+
+- 设备插件 (Device Plugin)
+在工作节点上运行并为 Pod 提供访问资源的能力，例如需要特定供应商初始化或安装步骤的本地硬件资源。
+
+- 事件 (Event)
+描述系统状态变化及需要注意的事项的 Kubernetes 对象。
+
+- 数据平面 (Data Plane)
+提供诸如 CPU、内存、网络和存储的能力，以便容器运行并连接到网络。
+
+- 特性门控 (Feature gate)
+一组键，用于控制集群中启用哪些 Kubernetes 特性。
+
+- 污点 (Taint)
+核心对象，包含三个必需的属性：key、value 和 effect。阻止节点或节点组调度 Pod。
+
+- 选择算符 (Selector)
+允许用户通过标签对资源对象进行筛选过滤。
+
+- 应用 (Applications)
+各种容器化应用运行所在的层。
+
+- 注解 (Annotation)
+以键值对形式给资源对象附加随机的、无法标识的元数据。
+
+- 资源配额 (Resource Quotas)
+限制每个命名空间资源消耗总和的约束。
+```
+
+
+
+
+
+## 2023年11月12日
+
+## 近日见闻
+
+1. IntelliJ IDEA 2023.3 Beta 版本现已发布，此版本包括抢先体验计划期间引入的所有重要更新。--java社区
+
+2. 苹果副总裁回应 “黄金内存”：「统一内存架构」的 8GB 近似于其它系统的 16GB。 --B站
+
+3. UNIX时间即将进入17亿纪元，再过两天，北京时间2023/11/15 06:13:20，UNIX时间将进入 1700000000纪元。 --UNIX社区
+
+## 阿里系产品崩了？
+
+今天下午，淘宝、咸鱼、钉钉、语雀崩了，上了热搜，阿里云也登不上去了，到底是怎么回事？官方回复说故障原因与某个底层服务组件有关，工程师正在紧急处理。由于该故障为全域故障。所有部署于阿里云且高度依赖阿里云 API 的平台均出现故障情况，包括淘宝、钉钉、咸鱼、阿里云盘、不背单词等。
+
+其实出现故障在运维工作中是正常不过的。但是提前发现问题，让故障消失，未来不复发是着重要关注的。最怕的是影响客户正常使用，而且是大面积故障，造成全国用户受影响，算是严重故障了。在阿里云拥有大规模运维团队的维护下，也会出现不可避免的问题，侧面表明999可用率的服务也是一种理论情况，实践才是检验真理的唯一标准。所以平时的所谓的运维救火演练、混沌平台的建设都是需要着重关注的。作为运维团队中的一员，每次大平台出现故障，我都会心里一惊，时长提醒自己，平时的运维预警以及故障演练是必不可少的。
+
+好了，周末已经过去啦，保持好心态迎接明天！
+
+
+
+## 2023年11月9日
+
+## 近日见闻
+
+1. Fedora 39 已正式发布。此版本采用 Linux 6.5 内核，更新的版本将作为稳定版更新发布。 --Fedora社区
+
+2. binlog4j 1.9.0发布，Java轻量级binary log客户端。 --oschina
+
+3. 魅族为Flyme征集中文名，入选者将获赠「华小魅」手机组合包。 --魅族
+
+4. vivo 已在Hugging Face上正式开源蓝心大模型BlueLM-7B。 --vivo
+
+## CentOS中实用的文件删除和备份脚本
+
+在实际工作中，避免不了需要批量删除某一些文件，或者备份一些文件，所以这就交给脚本完成就好，但是使用中一定要谨慎使用。
+
+### 删除文件
+
+首先准备好你要删除的文件目录到一个list.txt中
+
+例如：
+
+```bash
+ls -1 > list.txt
+```
+
+这个命令会将当前目录下的文件和目录名（不包括子目录）输出到 `list.txt` 文件中。
+
+- `ls` 是列出目录内容的命令。
+- `-1` 选项让 `ls` 每行只输出一个文件名，这使得输出更适合被脚本读取。
+- `>` 是重定向操作符，它会将 `ls` 的输出写入到 `list.txt` 文件中。如果 `list.txt` 文件已经存在，这个操作会覆盖原有的文件内容。
+
+如果你只希望列出文件，而非目录，你可以使用 `ls -1p | grep -v /` 命令：
+
+```bash
+ls -1p | grep -v / > list.txt
+```
+
+- `ls -1p` 命令会在目录名后添加 `/` 符号。
+- `grep -v /` 命令会过滤掉包含 `/` 的行，也就是目录名。
+- 最后结果重定向到 `list.txt` 文件中。
+
+
+然后你可以使用 bash 脚本来实现删除文件。以下是一个示例脚本
+
+```bash
+#!/bin/bash
+
+# 假设你的 txt 文件名为 filelist.txt
+while IFS= read -r line
+do
+    if [ -f "$line" ]; then
+        rm "$line"
+        echo "$line 文件已被删除"
+    else
+        echo "$line 文件不存在"
+    fi
+done < "filelist.txt"
+```
+`IFS= read -r line` 是一种安全的读取文本文件的方式，它可以处理文件名中的特殊字符。
+
+`[ -f "$line" ]` 会检查一个名为 `$line` 的文件是否存在。
+
+`rm "$line"` 会删除指定的文件。
+
+`echo "$line 文件已被删除"` 或 `"$line 文件不存在"` 是一个简单的确认消息，它不是必需的，但有助于你知道脚本在做什么。
+
+另外，对于文件删除操作，一定要小心，因为删除的文件无法恢复。对于需要删除的文件，最好先确认一下，避免误删。
+
+那如果使用python呢，可以使用 `os` 模块，它提供了许多处理文件和目录的功能。下面是一个示例脚本：
+
+```python
+import os
+
+# 假设你的 txt 文件名为 filelist.txt
+with open('filelist.txt', 'r') as f:
+    for line in f.readlines():
+        line = line.strip()  # 移除行尾的换行符
+        if os.path.isfile(line):
+            try:
+                os.remove(line)
+                print(f'文件 {line} 已被删除')
+            except OSError as e:
+                print(f'删除文件 {line} 发生错误: {e.strerror}')
+        else:
+            print(f'文件 {line} 不存在')
+```
+
+这个脚本使用了 `os.path.isfile(line)` 来检查一个名为 `line` 的文件是否存在，`os.remove(line)` 来删除指定的文件。
+
+使用 `try/except` 结构是为了处理可能发生的错误，例如权限问题或其它文件系统错误。当删除文件发生错误时，我们打印出错误信息。 删除文件操作要特别小心，先在一些不重要的文件上测试。确认没有问题后，再在你要删除的文件上执行。
+
+### 备份文件
+
+用python备份可以使用 `shutil` 和 `os` 库来复制文件和管理路径。以下是一个示例脚本：
+
+```python
+import os
+import shutil
+from datetime import datetime
+
+# 创建一个带日期的备份目录
+backup_dir = "/path/to/your/backup/directory/backup_" + datetime.now().strftime("%Y%m%d%H%M%S")
+os.makedirs(backup_dir, exist_ok=True)
+
+# 从 list.txt 读取文件名
+with open('list.txt', 'r') as f:
+    for line in f.readlines():
+        line = line.strip()  # 移除行尾的换行符
+        if os.path.isfile(line):
+            # 复制文件到备份目录
+            shutil.copy(line, backup_dir)
+```
+
+这个脚本会创建一个带时间戳的备份目录，并从 `list.txt` 中读取文件名，将存在的文件复制到备份目录。
+
+要定时执行这个脚本，你依然需要使用 cron 任务。你可以使用 `crontab -e` 命令打开你的用户的 cron 配置，并添加类似如下的配置：
+
+```
+0 0 * * * /usr/bin/python3 /path/to/your/script.py
+```
+
+这行配置表示每天午夜执行脚本 `/path/to/your/script.py`，`/usr/bin/python3` 是 Python 3 的常见路径，你需要根据你的环境替换为正确的 Python 路径。
+
+注意：在给定的路径中，`/path/to/your/backup/directory/` 和 `/path/to/your/script.py` 你需要替换为你自己的路径。
+
+## 2023年11月7日
+
+## 近日见闻
+
+1. 2023年11月6日，DataEase 开源数据可视化分析平台正式发布 v2.0 版本。DataEase 开源项目创立于2021年1月，于2021年6月发布v1.0版本。 --DataEase
+
+2. DALL・E3绘图来啦，开源AI聊天、绘图软件AIdea现已支持 DALL・E3。 --mylxsw
+
+3. OpenAI开发者大会：GPT-4 Turbo、GPTs商店、128k上下文窗口、大降价。 --奥特曼
+
+4. 龙芯 3A6000 国产桌面处理器本月底发布，对标英特尔10代酷睿。 --龙芯
+
+5. 李开复旗下AI公司发布Yi系列开源大模型，估值超 10 亿美元 --零一万物
+
+## 一种框架，一次代码，多平台使用
+
+### Flutter
+
+有没有一种语言或者一种框架，只需编写一次代码，就可以在多种平台运行，没错它来了，它就是Flutter。
+
+Flutter是一种前端框架。它是Google开发的一套用户界面（UI）开发工具，可以用一套代码库来构建在iOS、Android、Web、和桌面环境下运行的应用。Flutter的主要优势在于它的高度可定制性，以及其跨平台的能力。
+
+Flutter使用Dart语言进行编程。Dart是由Google开发的一种计算机编程语言，它旨在为开发者提供一种简单、强大的方式来开发高效的、高质量的应用程序，特别是对于UI开发而言。Dart的语法风格相对简洁，同时它的性能强大、效率高，是Flutter的理想选择。
+
+### Dart
+
+Dart是由Google开发和维护的一种通用编程语言。它在2011年首次亮相，最初设计的目标主要是用于开发现代web应用程序。随着时间的推移，Dart已经发展成为一种多用途、简单易用、高效率、面向对象的语言。
+
+以下是关于Dart的一些主要特性：
+
+1. **易于学习和使用**：Dart与许多现有的语言有着相似的语法，特别是C语言和JavaScript，这使得开发者可以轻易地上手。同时，Dart也提供了一些现代化语言特性，提升开发效率和可读性。
+
+2. **面向对象**：Dart是一种基于类的、面向对象的语言，所有的值都是对象，所有的对象都是类的实例。它还支持mixin式的继承。
+
+3. **强类型**：虽然Dart在早期版本中是弱类型的，但现在它已经实现了强类型。这使得开发者可以在编译时捕获更多的错误，从而提高代码质量。
+
+4. **垃圾回收**：Dart使用垃圾回收技术来自动管理内存，无需开发者手动释放不再使用的内存。
+
+5. **支持并发**：Dart通过Isolates（一种类似于线程的实体，但不共享内存）来实现并发处理。
+
+6. **用于多平台开发**：通过Google的Flutter框架，Dart可以用于开发跨平台的移动、Web和桌面应用程序。
+
+Dart语言的一个简单示例：
+
+```dart
+void main() {
+  var name = 'World';
+  print('Hello, $name!');
+}
+```
+这段代码会输出 "Hello, World!"。其中的`$name`是一个字符串插值的例子，可以在字符串中直接插入变量或表达式的值。
+
+###  开发一个Flutter应用程序的步骤
+
+1. **安装Flutter**: 下载最新稳定版本的Flutter SDK，然后添加flutter/bin到环境变量中。
+
+2. **安装编辑器**: 尽管您可以使用任何文本编辑器来写Flutter应用，但建议使用支持Flutter开发的编辑器，例如Android Studio，VS Code，或IntelliJ IDEA。这些编辑器都有Flutter插件，可以提供代码补全、语法高亮、widget编辑等功能。
+
+3. **创建新的Flutter应用**: 在命令行中，您可以通过以下命令来创建一个新的Flutter应用：
+    ```
+    flutter create my_app
+    ```
+    这将在当前目录下创建一个新的文件夹，文件夹名为my_app，里面包含了一个简单Flutter应用的初始代码。
+
+4. **运行Flutter应用**: 在my_app目录下，用以下命令来启动您的应用：
+    ```
+    cd my_app
+    flutter run
+    ```
+    如果您已经连接了Android设备，或者已经启动了Android模拟器，您的应用应该会在设备或模拟器上运行起来。
+
+5. **编辑Flutter应用**: 打开my_app/lib/main.dart，这是应用程序的主入口文件。在这里，您可以开始编写自己的应用代码。以下是一个简单的示例，展示了一个包含“Hello World”文本的页面：
+    ```dart
+    import 'package:flutter/material.dart';
+
+    void main() {
+      runApp(MyApp());
+    }
+
+    class MyApp extends StatelessWidget {
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(
+              title: Text('My First Flutter App'),
+            ),
+            body: Center(
+              child: Text('Hello World'),
+            ),
+          ),
+        );
+      }
+    }
+    ```
+    保存文件后，Flutter的热重载功能会立即在设备或模拟器上更新应用。
+
+### 创建一个显示用户信息的Flutter应用
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('User Info')),
+        body: DataTable(
+          columns: const <DataColumn>[
+            DataColumn(
+              label: Text(
+                'Name',
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Age',
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Address',
+              ),
+            ),
+          ],
+          rows: const <DataRow>[
+            DataRow(
+              cells: <DataCell>[
+                DataCell(Text('John')),
+                DataCell(Text('30')),
+                DataCell(Text('New York')),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+
+
 ## 2023年11月6日
 
 ## 近日见闻

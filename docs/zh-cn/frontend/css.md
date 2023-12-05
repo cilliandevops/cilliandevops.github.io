@@ -135,3 +135,29 @@ a:hover {
 ```
 
 这些例子涵盖了CSS的一些基本知识，但还有更多需要学习的内容。可以通过创建自己的网页并尝试使用这些代码来更深入地理解它们。
+
+## 布局
+
+学习网址 <https://www.runoob.com/css/css-tutorial.html>
+
+在 CSS 中，有许多用于控制布局的属性。以下列举了一些常见的属性：
+
+width 和 height：用于设置元素的宽度和高度。
+
+display：这是一个非常重要的属性，它确定了一个元素如何在页面上展示。常见的值有 block，inline，inline-block，flex，grid 等。
+
+position：控制元素的定位方式。它的值可以是 static，relative，absolute，fixed 或 sticky。
+
+top，right，bottom 和 left：当 position 的值不是 static 时，这些属性决定了元素从其定位点的位置。
+
+margin：定义元素四周的外边距。可以用像素、百分比或 em 等单位表示。
+
+padding：定义元素边框以内的空间。同样可以使用像素、百分比或 em 等单位表示。
+
+border：定义元素的边框。你可以定义边框的宽度、样式（如实线、虚线等）和颜色。
+
+box-sizing：该属性决定宽度和高度的计算方式。content-box 是默认值，意味着宽度和高度分别应用于元素的内容框。在此模式下，元素的总宽度/高度是内容、内边距和边框的总和。border-box 让元素具有指定的宽度和高度，内边距和边框的宽度在已经设定的宽度和高度内，这样会更直观和方便。
+
+flex：一个在 flex 容器内的快捷属性，用于设置元素如何分配空间和对齐内容。
+
+grid：用于布局的二维系统，可以处理列和行。

@@ -5,6 +5,7 @@
 * [公众号文章]
   * [时间序列](zh-cn/wechat/wechat)
   * [测试](zh-cn/wechat/test)
+  * [2023年12月2日](zh-cn/wechat/2023年12月2日)
 * [基础]
   * [计算机](zh-cn/basic)
 * [前端]
